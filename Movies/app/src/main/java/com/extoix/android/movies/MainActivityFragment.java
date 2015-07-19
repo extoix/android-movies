@@ -23,7 +23,11 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
+
 
         MovieDetail movieDetail = new MovieDetail();
         movieDetail.setPosterPath("/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
@@ -36,14 +40,12 @@ public class MainActivityFragment extends Fragment {
         movieDetailList.add(movieDetail);
         movieDetailList.add(movieDetail);
 
-        MoviePosterAdapter moviePosterAdapter = new MoviePosterAdapter(
-                getActivity(),
+        MoviePosterAdapter moviePosterAdapter = new MoviePosterAdapter(getActivity(),
                 R.layout.movie_poster,
                 R.id.movie_poster_imageview,
                 movieDetailList
         );
 
-        GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
         moviePosterGridView.setAdapter(moviePosterAdapter);
 
         moviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
