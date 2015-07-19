@@ -23,7 +23,7 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_poster_imageview);
-        Picasso.with(getActivity()).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+        Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(imageView);
 
         return rootView;
     }
