@@ -31,6 +31,8 @@ import java.util.List;
  */
 public class MainActivityFragment extends Fragment {
 
+    MoviePosterAdapter mMoviePosterAdapter;
+
     public MainActivityFragment() {
     }
 
@@ -41,29 +43,17 @@ public class MainActivityFragment extends Fragment {
 
         GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
 
-
         RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
         retrieveMovieDetailsTask.execute();
 
-
-        MovieDetail movieDetail = new MovieDetail();
-        movieDetail.setPosterPath("/uXZYawqUsChGSj54wcuBtEdUJbh.jpg");
-
-        List<MovieDetail> movieDetailList = new ArrayList();
-        movieDetailList.add(movieDetail);
-        movieDetailList.add(movieDetail);
-        movieDetailList.add(movieDetail);
-        movieDetailList.add(movieDetail);
-        movieDetailList.add(movieDetail);
-        movieDetailList.add(movieDetail);
-
-        MoviePosterAdapter moviePosterAdapter = new MoviePosterAdapter(getActivity(),
+        mMoviePosterAdapter = new MoviePosterAdapter(
+            getActivity(),
             R.layout.movie_poster,
             R.id.movie_poster_imageview,
-            movieDetailList
+            new ArrayList()
         );
 
-        moviePosterGridView.setAdapter(moviePosterAdapter);
+        moviePosterGridView.setAdapter(mMoviePosterAdapter);
 
         moviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -168,6 +158,14 @@ public class MainActivityFragment extends Fragment {
             } catch (JSONException e) {
                 Log.e(LOG, "Error with parsing and creating movie detail list", e);
                 return null;  // if there is an error parsing the data
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<MovieDetail> movieDetailList) {
+            if (movieDetailList != null) {
+                mMoviePosterAdapter.clear();
+                mMoviePosterAdapter.addAll(movieDetailList);
             }
         }
     }
