@@ -27,23 +27,12 @@ public class MoviePosterAdapter extends ArrayAdapter<MovieDetail> {
         }
 
         ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_poster_imageview);
-        String moviePosterURL = buildMoviePosterURL(position);
+
+        MovieDetail movieDetail = getItem(position);
+        String moviePosterURL = movieDetail.getPosterPath();
 
         Picasso.with(getContext()).load(moviePosterURL).into(imageView);
 
         return imageView;
     }
-
-    private String buildMoviePosterURL(int position) {
-        MovieDetail movieDetail = getItem(position);
-
-        StringBuilder moviePosterURLBuilder = new StringBuilder();
-        moviePosterURLBuilder.append(MovieDetail.POSTER_PATH_BASE_URL);
-        moviePosterURLBuilder.append('/');
-        moviePosterURLBuilder.append(MovieDetail.POSTER_PATH_SIZE_W184);
-        moviePosterURLBuilder.append(movieDetail.getPosterPath());
-
-        return moviePosterURLBuilder.toString();
-    }
-
 }

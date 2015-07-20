@@ -12,6 +12,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +47,7 @@ public class MainActivityFragment extends Fragment {
 
 
         MovieDetail movieDetail = new MovieDetail();
-        movieDetail.setPosterPath("/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
+        movieDetail.setPosterPath("http://image.tmdb.org/t/p/w184/uXZYawqUsChGSj54wcuBtEdUJbh.jpg");
 
         List<MovieDetail> movieDetailList = new ArrayList();
         movieDetailList.add(movieDetail);
@@ -54,27 +58,30 @@ public class MainActivityFragment extends Fragment {
         movieDetailList.add(movieDetail);
 
         MoviePosterAdapter moviePosterAdapter = new MoviePosterAdapter(getActivity(),
-                R.layout.movie_poster,
-                R.id.movie_poster_imageview,
-                movieDetailList
+            R.layout.movie_poster,
+            R.id.movie_poster_imageview,
+            movieDetailList
         );
 
         moviePosterGridView.setAdapter(moviePosterAdapter);
 
         moviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
             }
         });
 
         return rootView;
     }
 
-    public class RetrieveMovieDetailsTask extends AsyncTask<Void, Void, Void> {
+    public class RetrieveMovieDetailsTask extends AsyncTask<Void, Void, List<MovieDetail>> {
         private final String LOG = RetrieveMovieDetailsTask.class.getSimpleName();
 
+        public final static String POSTER_PATH_BASE_URL = "http://image.tmdb.org/t/p";
+        public final static String POSTER_PATH_SIZE_W184 = "w184";
+
         @Override
-        protected Void doInBackground(Void... params) {
+        protected List<MovieDetail> doInBackground(Void... params) {
 
             HttpURLConnection httpURLConnection = null;
             BufferedReader bufferedReader = null;
@@ -134,7 +141,50 @@ public class MainActivityFragment extends Fragment {
                 }
             }
 
-            return null;  // this will only happen if there was an error getting or parsing the data
+            List<MovieDetail> movieDetailList = createMovieDetailList(movieDetailJSONStr);
+
+            return movieDetailList;
         }
+
+        protected List<MovieDetail> createMovieDetailList(String movieDetailJSONStr) {
+            try {
+                final String NODE_RESULTS = "results";
+                final String NODE_POSTER_PATH = "poster_path";
+
+                JSONObject movieDetailJSON = new JSONObject(movieDetailJSONStr);
+                JSONArray resultsArray = movieDetailJSON.getJSONArray(NODE_RESULTS);
+
+                int resultsCount = resultsArray.length();
+                List<MovieDetail> movieDetailList = new ArrayList();
+
+                for(int i = 0; i < resultsCount; i++) {
+                    JSONObject result = resultsArray.getJSONObject(i);
+                    String posterPath = result.getString(NODE_POSTER_PATH);
+
+                    String posterPathURL = buildPosterPathURL(posterPath);
+
+                    MovieDetail movieDetail = new MovieDetail();
+                    movieDetail.setPosterPath(posterPathURL);
+
+                    movieDetailList.add(movieDetail);
+                }
+
+                return movieDetailList;
+            } catch (JSONException e) {
+                Log.e(LOG, "Error with parsing and creating movie detail list", e);
+                return null;  // if there is an error parsing the data
+            }
+        }
+
+        private String buildPosterPathURL(String posterPath) {
+            StringBuilder moviePosterURLBuilder = new StringBuilder();
+            moviePosterURLBuilder.append(POSTER_PATH_BASE_URL);
+            moviePosterURLBuilder.append('/');
+            moviePosterURLBuilder.append(POSTER_PATH_SIZE_W184);
+            moviePosterURLBuilder.append(posterPath);
+
+            return moviePosterURLBuilder.toString();
+        }
+
     }
 }
