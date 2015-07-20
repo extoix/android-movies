@@ -41,7 +41,7 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
+        final GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
 
         RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
         retrieveMovieDetailsTask.execute();
@@ -57,7 +57,22 @@ public class MainActivityFragment extends Fragment {
 
         moviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+
+                MovieDetail movieDetail = mMoviePosterAdapter.getItem(position);
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(movieDetail.getTitle());
+                stringBuilder.append('\n');
+                stringBuilder.append(movieDetail.getReleaseDate());
+                stringBuilder.append('\n');
+                stringBuilder.append(movieDetail.getPosterPath());
+                stringBuilder.append('\n');
+                stringBuilder.append(movieDetail.getVoteAverage());
+                stringBuilder.append('\n');
+                stringBuilder.append(movieDetail.getOverview());
+                stringBuilder.append('\n');
+
+                Toast.makeText(getActivity(), stringBuilder.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -136,6 +151,10 @@ public class MainActivityFragment extends Fragment {
         protected List<MovieDetail> createMovieDetailList(String movieDetailJSONStr) {
             try {
                 final String NODE_RESULTS = "results";
+                final String NODE_TITLE = "title";
+                final String NODE_RELEASE_DATE = "release_date";
+                final String NODE_VOTE_AVERAGE = "vote_average";
+                final String NODE_OVERVIEW = "overview";
                 final String NODE_POSTER_PATH = "poster_path";
 
                 JSONObject movieDetailJSON = new JSONObject(movieDetailJSONStr);
@@ -146,9 +165,17 @@ public class MainActivityFragment extends Fragment {
 
                 for(int i = 0; i < resultsCount; i++) {
                     JSONObject result = resultsArray.getJSONObject(i);
+                    String title = result.getString(NODE_TITLE);
+                    String releaseDate = result.getString(NODE_RELEASE_DATE);
+                    String voteAverage = result.getString(NODE_VOTE_AVERAGE);
+                    String overview = result.getString(NODE_OVERVIEW);
                     String posterPath = result.getString(NODE_POSTER_PATH);
 
                     MovieDetail movieDetail = new MovieDetail();
+                    movieDetail.setTitle(title);
+                    movieDetail.setReleaseDate(releaseDate);
+                    movieDetail.setVoteAverage(voteAverage);
+                    movieDetail.setOverview(overview);
                     movieDetail.setPosterPath(posterPath);
 
                     movieDetailList.add(movieDetail);
