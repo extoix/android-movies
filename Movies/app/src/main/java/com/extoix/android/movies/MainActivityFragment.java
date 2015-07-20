@@ -47,7 +47,7 @@ public class MainActivityFragment extends Fragment {
 
 
         MovieDetail movieDetail = new MovieDetail();
-        movieDetail.setPosterPath("http://image.tmdb.org/t/p/w184/uXZYawqUsChGSj54wcuBtEdUJbh.jpg");
+        movieDetail.setPosterPath("/uXZYawqUsChGSj54wcuBtEdUJbh.jpg");
 
         List<MovieDetail> movieDetailList = new ArrayList();
         movieDetailList.add(movieDetail);
@@ -76,9 +76,6 @@ public class MainActivityFragment extends Fragment {
 
     public class RetrieveMovieDetailsTask extends AsyncTask<Void, Void, List<MovieDetail>> {
         private final String LOG = RetrieveMovieDetailsTask.class.getSimpleName();
-
-        public final static String POSTER_PATH_BASE_URL = "http://image.tmdb.org/t/p";
-        public final static String POSTER_PATH_SIZE_W184 = "w184";
 
         @Override
         protected List<MovieDetail> doInBackground(Void... params) {
@@ -161,10 +158,8 @@ public class MainActivityFragment extends Fragment {
                     JSONObject result = resultsArray.getJSONObject(i);
                     String posterPath = result.getString(NODE_POSTER_PATH);
 
-                    String posterPathURL = buildPosterPathURL(posterPath);
-
                     MovieDetail movieDetail = new MovieDetail();
-                    movieDetail.setPosterPath(posterPathURL);
+                    movieDetail.setPosterPath(posterPath);
 
                     movieDetailList.add(movieDetail);
                 }
@@ -175,16 +170,5 @@ public class MainActivityFragment extends Fragment {
                 return null;  // if there is an error parsing the data
             }
         }
-
-        private String buildPosterPathURL(String posterPath) {
-            StringBuilder moviePosterURLBuilder = new StringBuilder();
-            moviePosterURLBuilder.append(POSTER_PATH_BASE_URL);
-            moviePosterURLBuilder.append('/');
-            moviePosterURLBuilder.append(POSTER_PATH_SIZE_W184);
-            moviePosterURLBuilder.append(posterPath);
-
-            return moviePosterURLBuilder.toString();
-        }
-
     }
 }
