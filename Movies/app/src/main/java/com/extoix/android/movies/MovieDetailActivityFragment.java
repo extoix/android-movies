@@ -26,6 +26,10 @@ public class MovieDetailActivityFragment extends Fragment {
             MovieDetail movieDetail = (MovieDetail)intent.getParcelableExtra(Intent.EXTRA_TEXT);
 
             ((TextView)rootView.findViewById(R.id.movie_detail_title)).setText(movieDetail.getTitle());
+            ((TextView)rootView.findViewById(R.id.movie_detail_releaseDate)).setText(movieDetail.getReleaseDate());
+            ((TextView)rootView.findViewById(R.id.movie_detail_voteAverage)).setText(movieDetail.getVoteAverage());
+            ((TextView)rootView.findViewById(R.id.movie_detail_overview)).setText(movieDetail.getOverview());
+            ((TextView)rootView.findViewById(R.id.movie_detail_posterPath)).setText(movieDetail.getPosterPath());
         }
 
         return rootView;
