@@ -1,5 +1,6 @@
 package com.extoix.android.movies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,7 +44,7 @@ public class MainActivityFragment extends Fragment {
 
         final GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
 
-        RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
+        final RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
         retrieveMovieDetailsTask.execute();
 
         mMoviePosterAdapter = new MoviePosterAdapter(
@@ -73,6 +74,9 @@ public class MainActivityFragment extends Fragment {
                 stringBuilder.append('\n');
 
                 Toast.makeText(getActivity(), stringBuilder.toString(), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getActivity(), MovieDetailActivity.class).putExtra("title",movieDetail.getTitle());
+                startActivity(intent);
             }
         });
 
