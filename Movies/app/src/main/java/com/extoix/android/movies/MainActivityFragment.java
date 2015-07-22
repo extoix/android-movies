@@ -86,6 +86,9 @@ public class MainActivityFragment extends Fragment {
     public class RetrieveMovieDetailsTask extends AsyncTask<Void, Void, List<MovieDetail>> {
         private final String LOG = RetrieveMovieDetailsTask.class.getSimpleName();
 
+        public final static String POSTER_PATH_BASE_URL = "http://image.tmdb.org/t/p";
+        public final static String POSTER_PATH_SIZE_W184 = "w184";
+
         @Override
         protected List<MovieDetail> doInBackground(Void... params) {
 
@@ -182,6 +185,9 @@ public class MainActivityFragment extends Fragment {
                     movieDetail.setOverview(overview);
                     movieDetail.setPosterPath(posterPath);
 
+                    String posterPathURL = buildPosterPathURL(posterPath);
+                    movieDetail.setPosterPathURL(posterPathURL);
+
                     movieDetailList.add(movieDetail);
                 }
 
@@ -190,6 +196,16 @@ public class MainActivityFragment extends Fragment {
                 Log.e(LOG, "Error with parsing and creating movie detail list", e);
                 return null;  // if there is an error parsing the data
             }
+        }
+
+        private String buildPosterPathURL(String posterPath) {
+            StringBuilder moviePosterURLBuilder = new StringBuilder();
+            moviePosterURLBuilder.append(POSTER_PATH_BASE_URL);
+            moviePosterURLBuilder.append('/');
+            moviePosterURLBuilder.append(POSTER_PATH_SIZE_W184);
+            moviePosterURLBuilder.append(posterPath);
+
+            return moviePosterURLBuilder.toString();
         }
 
         @Override

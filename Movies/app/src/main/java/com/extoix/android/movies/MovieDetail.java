@@ -13,6 +13,7 @@ public class MovieDetail implements Parcelable {
     private String voteAverage;
     private String overview;
     private String posterPath;
+    private String posterPathURL;
 
     public MovieDetail() {
     }
@@ -23,6 +24,7 @@ public class MovieDetail implements Parcelable {
         voteAverage = parcel.readString();
         overview = parcel.readString();
         posterPath = parcel.readString();
+        posterPathURL = parcel.readString();
     }
 
     public static final Parcelable.Creator<MovieDetail> CREATOR = new Parcelable.Creator<MovieDetail>() {
@@ -78,6 +80,14 @@ public class MovieDetail implements Parcelable {
         this.posterPath = posterPath;
     }
 
+    public String getPosterPathURL() {
+        return posterPathURL;
+    }
+
+    public void setPosterPathURL(String posterPathURL) {
+        this.posterPathURL = posterPathURL;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -90,6 +100,7 @@ public class MovieDetail implements Parcelable {
         parcel.writeString(voteAverage);
         parcel.writeString(overview);
         parcel.writeString(posterPath);
+        parcel.writeString(posterPathURL);
     }
 
 }

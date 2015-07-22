@@ -16,9 +16,6 @@ import java.util.List;
  */
 public class MoviePosterAdapter extends ArrayAdapter<MovieDetail> {
 
-    public final static String POSTER_PATH_BASE_URL = "http://image.tmdb.org/t/p";
-    public final static String POSTER_PATH_SIZE_W184 = "w184";
-
     public MoviePosterAdapter(Context context, int resource, int textViewResourceId, List<MovieDetail> objects) {
         super(context, resource, textViewResourceId, objects);
     }
@@ -32,21 +29,10 @@ public class MoviePosterAdapter extends ArrayAdapter<MovieDetail> {
         ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_poster_imageview);
 
         MovieDetail movieDetail = getItem(position);
-        String posterPath = movieDetail.getPosterPath();
-        String posterPathURL = buildPosterPathURL(posterPath);
+        String posterPathURL = movieDetail.getPosterPathURL();
 
         Picasso.with(getContext()).load(posterPathURL).into(imageView);
 
         return imageView;
-    }
-
-    private String buildPosterPathURL(String posterPath) {
-        StringBuilder moviePosterURLBuilder = new StringBuilder();
-        moviePosterURLBuilder.append(POSTER_PATH_BASE_URL);
-        moviePosterURLBuilder.append('/');
-        moviePosterURLBuilder.append(POSTER_PATH_SIZE_W184);
-        moviePosterURLBuilder.append(posterPath);
-
-        return moviePosterURLBuilder.toString();
     }
 }

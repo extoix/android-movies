@@ -31,8 +31,7 @@ public class MovieDetailActivityFragment extends Fragment {
             ((TextView)rootView.findViewById(R.id.movie_detail_title)).setText(movieDetail.getTitle());
 
             ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_detail_poster);
-            Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(imageView);
-//            ((TextView)rootView.findViewById(R.id.movie_detail_posterPath)).setText(movieDetail.getPosterPath());
+            Picasso.with(getActivity()).load(movieDetail.getPosterPathURL()).into(imageView);
 
             ((TextView)rootView.findViewById(R.id.movie_detail_releaseDate)).setText(movieDetail.getReleaseDate());
             ((TextView)rootView.findViewById(R.id.movie_detail_voteAverage)).setText(movieDetail.getVoteAverage());
