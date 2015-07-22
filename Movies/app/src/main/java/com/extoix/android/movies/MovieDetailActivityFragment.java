@@ -6,7 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -26,10 +29,14 @@ public class MovieDetailActivityFragment extends Fragment {
             MovieDetail movieDetail = (MovieDetail)intent.getParcelableExtra(Intent.EXTRA_TEXT);
 
             ((TextView)rootView.findViewById(R.id.movie_detail_title)).setText(movieDetail.getTitle());
+
+            ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_detail_poster);
+            Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(imageView);
+//            ((TextView)rootView.findViewById(R.id.movie_detail_posterPath)).setText(movieDetail.getPosterPath());
+
             ((TextView)rootView.findViewById(R.id.movie_detail_releaseDate)).setText(movieDetail.getReleaseDate());
             ((TextView)rootView.findViewById(R.id.movie_detail_voteAverage)).setText(movieDetail.getVoteAverage());
             ((TextView)rootView.findViewById(R.id.movie_detail_overview)).setText(movieDetail.getOverview());
-            ((TextView)rootView.findViewById(R.id.movie_detail_posterPath)).setText(movieDetail.getPosterPath());
         }
 
         return rootView;
