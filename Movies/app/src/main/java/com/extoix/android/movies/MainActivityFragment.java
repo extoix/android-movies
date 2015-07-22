@@ -75,7 +75,7 @@ public class MainActivityFragment extends Fragment {
 
                 Toast.makeText(getActivity(), stringBuilder.toString(), Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(getActivity(), MovieDetailActivity.class).putExtra("title",movieDetail.getTitle());
+                Intent intent = new Intent(getActivity(), MovieDetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
                 startActivity(intent);
             }
         });

@@ -22,9 +22,10 @@ public class MovieDetailActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-        if(intent != null && intent.hasExtra("title")) {
-            String title = intent.getStringExtra("title");
-            ((TextView)rootView.findViewById(R.id.title)).setText(title);
+        if(intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
+            MovieDetail movieDetail = (MovieDetail)intent.getParcelableExtra(Intent.EXTRA_TEXT);
+
+            ((TextView)rootView.findViewById(R.id.movie_detail_title)).setText(movieDetail.getTitle());
         }
 
         return rootView;
