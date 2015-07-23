@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,20 +59,6 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
                 MovieDetail movieDetail = mMoviePosterAdapter.getItem(position);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(movieDetail.getTitle());
-                stringBuilder.append('\n');
-                stringBuilder.append(movieDetail.getReleaseDate());
-                stringBuilder.append('\n');
-                stringBuilder.append(movieDetail.getPosterPath());
-                stringBuilder.append('\n');
-                stringBuilder.append(movieDetail.getVoteAverage());
-                stringBuilder.append('\n');
-                stringBuilder.append(movieDetail.getOverview());
-                stringBuilder.append('\n');
-
-                Toast.makeText(getActivity(), stringBuilder.toString(), Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(getActivity(), MovieDetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
                 startActivity(intent);
