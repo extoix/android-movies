@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -39,6 +40,9 @@ public class MainActivityFragment extends Fragment {
     private MoviePosterAdapter mMoviePosterAdapter;
     private ArrayList<MovieDetail> mMovieDetailList;
     public static final String MOVIE_DETAIL_LIST_KEY = "movieDetailList";
+    private GridView mMoviePosterGridView;
+    private int mGridViewPosition;
+    public static final String MOVIE_DETAIL_GRIDVIEW_KEY = "gridViewPosition";
 
     public MainActivityFragment() {
     }
@@ -77,7 +81,23 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(MOVIE_DETAIL_LIST_KEY, mMovieDetailList);
+
+        mGridViewPosition = currentViewPosition(mMoviePosterGridView);
+        outState.putInt(MOVIE_DETAIL_GRIDVIEW_KEY, mGridViewPosition);
+
         super.onSaveInstanceState(outState);
+    }
+
+    private int currentViewPosition(AbsListView absListView) {
+        int firstVisiblePosition = absListView.getFirstVisiblePosition();
+        View topPositionView = absListView.getChildAt(0);
+
+        if(topPositionView == null) {
+            return 0;
+        } else {
+            int offsetPosition = topPositionView.getTop() - absListView.getPaddingTop();
+            return offsetPosition;
+        }
     }
 
     @Override
@@ -85,6 +105,7 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null && savedInstanceState.containsKey(MOVIE_DETAIL_LIST_KEY)) {
             mMovieDetailList = savedInstanceState.getParcelableArrayList(MOVIE_DETAIL_LIST_KEY);
+            mGridViewPosition = savedInstanceState.getInt(MOVIE_DETAIL_GRIDVIEW_KEY);
         }
     }
 
@@ -93,7 +114,7 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
+        mMoviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
 
         mMoviePosterAdapter = new MoviePosterAdapter(
             getActivity(),
@@ -102,9 +123,9 @@ public class MainActivityFragment extends Fragment {
             new ArrayList()
         );
 
-        moviePosterGridView.setAdapter(mMoviePosterAdapter);
+        mMoviePosterGridView.setAdapter(mMoviePosterAdapter);
 
-        moviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mMoviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
                 MovieDetail movieDetail = mMoviePosterAdapter.getItem(position);
@@ -113,6 +134,8 @@ public class MainActivityFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        mMoviePosterGridView.setSelection(mGridViewPosition);
 
         return rootView;
     }
