@@ -1,7 +1,10 @@
 package com.extoix.android.movies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,11 +43,23 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void updateMovies() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+        if(isOnline()) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
 
-        RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
-        retrieveMovieDetailsTask.execute(sortOrderPreference);
+            RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
+            retrieveMovieDetailsTask.execute(sortOrderPreference);
+        } else {
+            Toast.makeText(getActivity(), "No network connection, please connect to a network and start the application", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /*http://developer.android.com/training/basics/network-ops/managing.html*/
+    //todo look at the rest of the document to handle preference activity
+    public boolean isOnline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
     @Override
