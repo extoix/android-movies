@@ -38,18 +38,26 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {
     }
 
+    private void updateMovies() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+
+        RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
+        retrieveMovieDetailsTask.execute(sortOrderPreference);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovies();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
-
-        RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
-        retrieveMovieDetailsTask.execute(sortOrderPreference);
 
         mMoviePosterAdapter = new MoviePosterAdapter(
             getActivity(),
