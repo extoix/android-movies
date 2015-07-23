@@ -1,58 +1,64 @@
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.extoix.android.movies.MovieDetailActivityFragment">
-
-    <TextView
-        android:id="@+id/movie_detail_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_dark"
-        android:padding="16dp"
-        android:textColor="@android:color/white"
-        android:textSize="30dp"
-        android:gravity="center_vertical" />
+    tools:context="com.extoix.android.movies.MovieDetailActivityFragment"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/movie_detail_poster"
-            android:layout_width="130dp"
-            android:layout_height="200dp" />
+        <TextView
+            android:id="@+id/movie_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:padding="16dp"
+            android:textColor="@android:color/white"
+            android:textSize="30dp"
+            android:gravity="center_vertical" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="32dp">
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-            <TextView
-                android:id="@+id/movie_detail_releaseDate"
+            <ImageView
+                android:id="@+id/movie_detail_poster"
+                android:layout_width="130dp"
+                android:layout_height="200dp" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp" />
+                android:orientation="vertical"
+                android:padding="32dp">
 
-            <TextView
-                android:id="@+id/movie_detail_voteAverage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp" />
+                <TextView
+                    android:id="@+id/movie_detail_releaseDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/movie_detail_voteAverage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/movie_detail_overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/movie_detail_overview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp" />
-
-</LinearLayout>
+</ScrollView>
