@@ -1,9 +1,11 @@
 package com.extoix.android.movies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,10 +43,13 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
+        GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
 
-        final RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
-        retrieveMovieDetailsTask.execute();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+
+        RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
+        retrieveMovieDetailsTask.execute(sortOrderPreference);
 
         mMoviePosterAdapter = new MoviePosterAdapter(
             getActivity(),
@@ -68,14 +73,14 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    public class RetrieveMovieDetailsTask extends AsyncTask<Void, Void, List<MovieDetail>> {
+    public class RetrieveMovieDetailsTask extends AsyncTask<String, Void, List<MovieDetail>> {
         private final String LOG = RetrieveMovieDetailsTask.class.getSimpleName();
 
         public final static String POSTER_PATH_BASE_URL = "http://image.tmdb.org/t/p";
         public final static String POSTER_PATH_SIZE_W184 = "w184";
 
         @Override
-        protected List<MovieDetail> doInBackground(Void... params) {
+        protected List<MovieDetail> doInBackground(String... params) {
 
             HttpURLConnection httpURLConnection = null;
             BufferedReader bufferedReader = null;
@@ -94,7 +99,7 @@ public class MainActivityFragment extends Fragment {
                 String apiKey = getString(R.string.themoviedb_api_key);
 
                 Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
-                        .appendQueryParameter(SORT_BY_PARAM, "popularity.desc")
+                        .appendQueryParameter(SORT_BY_PARAM, params[0])
                         .appendQueryParameter(API_KEY_PARAM, apiKey)
                         .build();
 
