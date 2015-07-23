@@ -29,7 +29,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -37,18 +36,19 @@ import java.util.List;
  */
 public class MainActivityFragment extends Fragment {
 
-    MoviePosterAdapter mMoviePosterAdapter;
+    private MoviePosterAdapter mMoviePosterAdapter;
+    private ArrayList<MovieDetail> mMovieDetailList;
+    public static final String MOVIE_DETAIL_LIST_KEY = "movieDetailList";
 
     public MainActivityFragment() {
     }
 
-    private void updateMovies() {
-        if(isOnline()) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+    @Override
+    public void onStart() {
+        super.onStart();
 
-            RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
-            retrieveMovieDetailsTask.execute(sortOrderPreference);
+        if(isOnline()) {
+            updateMovies();
         } else {
             Toast.makeText(getActivity(), "No network connection, please connect to a network and start the application", Toast.LENGTH_LONG).show();
         }
@@ -62,10 +62,30 @@ public class MainActivityFragment extends Fragment {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
+    private void updateMovies() {
+        if(mMovieDetailList == null) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+
+            RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
+            retrieveMovieDetailsTask.execute(sortOrderPreference);
+        } else {
+            mMoviePosterAdapter.addAll(mMovieDetailList);
+        }
+    }
+
     @Override
-    public void onStart() {
-        super.onStart();
-        updateMovies();
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(MOVIE_DETAIL_LIST_KEY, mMovieDetailList);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.containsKey(MOVIE_DETAIL_LIST_KEY)) {
+            mMovieDetailList = savedInstanceState.getParcelableArrayList(MOVIE_DETAIL_LIST_KEY);
+        }
     }
 
     @Override
@@ -97,14 +117,14 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    public class RetrieveMovieDetailsTask extends AsyncTask<String, Void, List<MovieDetail>> {
+    public class RetrieveMovieDetailsTask extends AsyncTask<String, Void, ArrayList<MovieDetail>> {
         private final String LOG = RetrieveMovieDetailsTask.class.getSimpleName();
 
         public final static String POSTER_PATH_BASE_URL = "http://image.tmdb.org/t/p";
         public final static String POSTER_PATH_SIZE_W184 = "w184";
 
         @Override
-        protected List<MovieDetail> doInBackground(String... params) {
+        protected ArrayList<MovieDetail> doInBackground(String... params) {
 
             HttpURLConnection httpURLConnection = null;
             BufferedReader bufferedReader = null;
@@ -164,12 +184,12 @@ public class MainActivityFragment extends Fragment {
                 }
             }
 
-            List<MovieDetail> movieDetailList = createMovieDetailList(movieDetailJSONStr);
+            ArrayList<MovieDetail> movieDetailList = createMovieDetailList(movieDetailJSONStr);
 
             return movieDetailList;
         }
 
-        protected List<MovieDetail> createMovieDetailList(String movieDetailJSONStr) {
+        protected ArrayList<MovieDetail> createMovieDetailList(String movieDetailJSONStr) {
             try {
                 final String NODE_RESULTS = "results";
                 final String NODE_TITLE = "title";
@@ -182,7 +202,7 @@ public class MainActivityFragment extends Fragment {
                 JSONArray resultsArray = movieDetailJSON.getJSONArray(NODE_RESULTS);
 
                 int resultsCount = resultsArray.length();
-                List<MovieDetail> movieDetailList = new ArrayList();
+                ArrayList<MovieDetail> movieDetailList = new ArrayList();
 
                 for(int i = 0; i < resultsCount; i++) {
                     JSONObject result = resultsArray.getJSONObject(i);
@@ -223,10 +243,11 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<MovieDetail> movieDetailList) {
+        protected void onPostExecute(ArrayList<MovieDetail> movieDetailList) {
             if (movieDetailList != null) {
                 mMoviePosterAdapter.clear();
                 mMoviePosterAdapter.addAll(movieDetailList);
+                mMovieDetailList = movieDetailList;
             }
         }
     }
