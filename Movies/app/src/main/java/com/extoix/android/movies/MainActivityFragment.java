@@ -74,6 +74,7 @@ public class MainActivityFragment extends Fragment {
             RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
             retrieveMovieDetailsTask.execute(sortOrderPreference);
         } else {
+            mMoviePosterAdapter.clear();
             mMoviePosterAdapter.addAll(mMovieDetailList);
         }
     }
