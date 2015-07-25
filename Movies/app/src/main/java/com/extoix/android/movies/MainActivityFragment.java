@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -42,12 +41,6 @@ public class MainActivityFragment extends Fragment {
     private ArrayList<MovieDetail> mMovieDetailList;
     public static final String MOVIE_DETAIL_LIST_KEY = "movieDetailList";
 
-    private GridView mMoviePosterGridView;
-    private int mGridViewPosition;
-    public static final String MOVIE_DETAIL_GRIDVIEW_KEY = "gridViewPosition";
-
-    SharedPreferences mSharedPreferences;
-
     public MainActivityFragment() {
     }
 
@@ -56,24 +49,10 @@ public class MainActivityFragment extends Fragment {
         super.onStart();
 
         if(isOnline()) {
-            loadSharedPreferences();
             updateMovies();
         } else {
             Toast.makeText(getActivity(), "No network connection, please connect to a network and start the application", Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void loadSharedPreferences() {
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                mMoviePosterGridView.setSelection(0);
-            }
-        };
-
-        mSharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
     }
 
     /*http://developer.android.com/training/basics/network-ops/managing.html*/
@@ -84,7 +63,8 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void updateMovies() {
-        String sortOrderPreference = mSharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrderPreference = sharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
 
         RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
         retrieveMovieDetailsTask.execute(sortOrderPreference);
@@ -93,23 +73,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(MOVIE_DETAIL_LIST_KEY, mMovieDetailList);
-
-        mGridViewPosition = currentViewPosition(mMoviePosterGridView);
-        outState.putInt(MOVIE_DETAIL_GRIDVIEW_KEY, mGridViewPosition);
-
         super.onSaveInstanceState(outState);
-    }
-
-    private int currentViewPosition(AbsListView absListView) {
-        int firstVisiblePosition = absListView.getFirstVisiblePosition();
-        View topPositionView = absListView.getChildAt(0);
-
-        if(topPositionView == null) {
-            return 0;
-        } else {
-            int offsetPosition = topPositionView.getTop() - absListView.getPaddingTop();
-            return offsetPosition;
-        }
     }
 
     @Override
@@ -120,7 +84,6 @@ public class MainActivityFragment extends Fragment {
             mMovieDetailList = new ArrayList<>();
         } else {
             mMovieDetailList = savedInstanceState.getParcelableArrayList(MOVIE_DETAIL_LIST_KEY);
-            mGridViewPosition = savedInstanceState.getInt(MOVIE_DETAIL_GRIDVIEW_KEY);
         }
     }
 
@@ -129,7 +92,7 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mMoviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
+        GridView moviePosterGridView = (GridView) rootView.findViewById(R.id.movie_poster_gridview);
 
         mMoviePosterAdapter = new MoviePosterAdapter(
             getActivity(),
@@ -138,9 +101,9 @@ public class MainActivityFragment extends Fragment {
             mMovieDetailList
         );
 
-        mMoviePosterGridView.setAdapter(mMoviePosterAdapter);
+        moviePosterGridView.setAdapter(mMoviePosterAdapter);
 
-        mMoviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        moviePosterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
                 MovieDetail movieDetail = mMoviePosterAdapter.getItem(position);
@@ -149,8 +112,6 @@ public class MainActivityFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        mMoviePosterGridView.setSelection(mGridViewPosition);
 
         return rootView;
     }
@@ -285,7 +246,6 @@ public class MainActivityFragment extends Fragment {
             if (movieDetailList != null) {
                 mMoviePosterAdapter.clear();
                 mMoviePosterAdapter.addAll(movieDetailList);
-//                mMovieDetailList = movieDetailList;
             }
         }
     }
