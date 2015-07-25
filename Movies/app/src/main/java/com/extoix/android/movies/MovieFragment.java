@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MovieFragment extends Fragment {
-
+    private static final String LOG = MovieFragment.class.getSimpleName();
+    
     private MoviePosterAdapter mMoviePosterAdapter;
     private ArrayList<MovieDetail> mMovieDetailList;
 
@@ -38,7 +40,7 @@ public class MovieFragment extends Fragment {
         super.onStart();
 
         if(isOnline()) {
-            updateMovies();
+            updateMoviePosters();
         } else {
             Toast.makeText(getActivity(), "No network connection, please connect to a network and start the application", Toast.LENGTH_LONG).show();
         }
@@ -96,7 +98,7 @@ public class MovieFragment extends Fragment {
         return rootView;
     }
 
-    private void updateMovies() {
+    private void updateMoviePosters() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortBy = sharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
 
@@ -121,7 +123,7 @@ public class MovieFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                String someErrorMessage = error.getMessage();
+                Log.e(LOG, "Error with updateMoviePosters during service CallBack", error);
             }
         });
     }
