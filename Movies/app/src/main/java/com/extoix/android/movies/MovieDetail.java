@@ -9,10 +9,10 @@ import android.os.Parcelable;
 public class MovieDetail implements Parcelable {
 
     private String title;
-    private String releaseDate;
-    private String voteAverage;
+    private String release_date;
+    private String vote_average;
     private String overview;
-    private String posterPath;
+    private String poster_path;
     private String posterPathURL;
 
     public MovieDetail() {
@@ -20,10 +20,10 @@ public class MovieDetail implements Parcelable {
 
     private MovieDetail(Parcel parcel){
         title = parcel.readString();
-        releaseDate = parcel.readString();
-        voteAverage = parcel.readString();
+        release_date = parcel.readString();
+        vote_average = parcel.readString();
         overview = parcel.readString();
-        posterPath = parcel.readString();
+        poster_path = parcel.readString();
         posterPathURL = parcel.readString();
     }
 
@@ -48,20 +48,20 @@ public class MovieDetail implements Parcelable {
         this.title = title;
     }
 
-    public String getReleaseDate() {
-        return releaseDate;
+    public String getRelease_date() {
+        return release_date;
     }
 
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
     }
 
-    public String getVoteAverage() {
-        return voteAverage;
+    public String getVote_average() {
+        return vote_average;
     }
 
-    public void setVoteAverage(String voteAverage) {
-        this.voteAverage = voteAverage;
+    public void setVote_average(String vote_average) {
+        this.vote_average = vote_average;
     }
 
     public String getOverview() {
@@ -72,12 +72,12 @@ public class MovieDetail implements Parcelable {
         this.overview = overview;
     }
 
-    public String getPosterPath() {
-        return posterPath;
+    public String getPoster_path() {
+        return poster_path;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
     }
 
     public String getPosterPathURL() {
@@ -96,10 +96,10 @@ public class MovieDetail implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(title);
-        parcel.writeString(releaseDate);
-        parcel.writeString(voteAverage);
+        parcel.writeString(release_date);
+        parcel.writeString(vote_average);
         parcel.writeString(overview);
-        parcel.writeString(posterPath);
+        parcel.writeString(poster_path);
         parcel.writeString(posterPathURL);
     }
 
