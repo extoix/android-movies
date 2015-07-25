@@ -23,18 +23,14 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-
-/**
- * A placeholder fragment containing a simple view.
- */
-public class MainActivityFragment extends Fragment {
+public class MovieFragment extends Fragment {
 
     private MoviePosterAdapter mMoviePosterAdapter;
-
     private ArrayList<MovieDetail> mMovieDetailList;
+
     public static final String MOVIE_DETAIL_LIST_KEY = "movieDetailList";
 
-    public MainActivityFragment() {
+    public MovieFragment() {
     }
 
     @Override

@@ -9,4 +9,5 @@
         <item>@string/pref_sort_popularity</item>
         <item>@string/pref_sort_highestRating</item>
     </string-array>
+
 </resources>

@@ -11,10 +11,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-
-/**
- * A placeholder fragment containing a simple view.
- */
 public class MovieDetailActivityFragment extends Fragment {
 
     public MovieDetailActivityFragment() {

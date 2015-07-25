@@ -11,9 +11,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by secure on 7/19/15.
- */
 public class MoviePosterAdapter extends ArrayAdapter<MovieDetail> {
 
     public MoviePosterAdapter(Context context, int resource, int textViewResourceId, List<MovieDetail> objects) {
