@@ -38,11 +38,15 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
 
     private MoviePosterAdapter mMoviePosterAdapter;
+
     private ArrayList<MovieDetail> mMovieDetailList;
     public static final String MOVIE_DETAIL_LIST_KEY = "movieDetailList";
+
     private GridView mMoviePosterGridView;
     private int mGridViewPosition;
     public static final String MOVIE_DETAIL_GRIDVIEW_KEY = "gridViewPosition";
+
+    SharedPreferences mSharedPreferences;
 
     public MainActivityFragment() {
     }
@@ -52,14 +56,27 @@ public class MainActivityFragment extends Fragment {
         super.onStart();
 
         if(isOnline()) {
+            loadSharedPreferences();
             updateMovies();
         } else {
             Toast.makeText(getActivity(), "No network connection, please connect to a network and start the application", Toast.LENGTH_LONG).show();
         }
     }
 
+    private void loadSharedPreferences() {
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                mMoviePosterGridView.setSelection(0);
+            }
+        };
+
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+    }
+
     /*http://developer.android.com/training/basics/network-ops/managing.html*/
-    //todo look at the rest of the document to handle preference activity
     public boolean isOnline() {
         ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -67,8 +84,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void updateMovies() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+        String sortOrderPreference = mSharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
 
         RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
         retrieveMovieDetailsTask.execute(sortOrderPreference);
@@ -97,7 +113,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState == null || !savedInstanceState.containsKey(MOVIE_DETAIL_LIST_KEY)) {
