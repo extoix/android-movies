@@ -67,16 +67,11 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void updateMovies() {
-        if(mMovieDetailList == null) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrderPreference = preferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
 
-            RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
-            retrieveMovieDetailsTask.execute(sortOrderPreference);
-        } else {
-            mMoviePosterAdapter.clear();
-            mMoviePosterAdapter.addAll(mMovieDetailList);
-        }
+        RetrieveMovieDetailsTask retrieveMovieDetailsTask = new RetrieveMovieDetailsTask();
+        retrieveMovieDetailsTask.execute(sortOrderPreference);
     }
 
     @Override
@@ -104,7 +99,10 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null && savedInstanceState.containsKey(MOVIE_DETAIL_LIST_KEY)) {
+
+        if(savedInstanceState == null || !savedInstanceState.containsKey(MOVIE_DETAIL_LIST_KEY)) {
+            mMovieDetailList = new ArrayList<>();
+        } else {
             mMovieDetailList = savedInstanceState.getParcelableArrayList(MOVIE_DETAIL_LIST_KEY);
             mGridViewPosition = savedInstanceState.getInt(MOVIE_DETAIL_GRIDVIEW_KEY);
         }
@@ -121,7 +119,7 @@ public class MainActivityFragment extends Fragment {
             getActivity(),
             R.layout.movie_poster,
             R.id.movie_poster_imageview,
-            new ArrayList()
+            mMovieDetailList
         );
 
         mMoviePosterGridView.setAdapter(mMoviePosterAdapter);
@@ -271,7 +269,7 @@ public class MainActivityFragment extends Fragment {
             if (movieDetailList != null) {
                 mMoviePosterAdapter.clear();
                 mMoviePosterAdapter.addAll(movieDetailList);
-                mMovieDetailList = movieDetailList;
+//                mMovieDetailList = movieDetailList;
             }
         }
     }
