@@ -24,7 +24,7 @@ public class MovieDbTest extends AndroidTestCase {
     public void testCreateMovieDb() throws Throwable {
 
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-        tableNameHashSet.add(MovieEntry.TABLE_NAME);
+        tableNameHashSet.add(MovieEntry.TABLE_MOVIE);
 
         SQLiteDatabase db = new MovieDbHelper(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
@@ -40,7 +40,7 @@ public class MovieDbTest extends AndroidTestCase {
         assertTrue("Error: Your database was created without all entry tables", tableNameHashSet.isEmpty());
 
 
-        c = db.rawQuery("PRAGMA table_info(" + MovieEntry.TABLE_NAME + ")", null);
+        c = db.rawQuery("PRAGMA table_info(" + MovieEntry.TABLE_MOVIE + ")", null);
         assertTrue("Error: This means that we were unable to query the database for table information.", c.moveToFirst());
 
 
@@ -75,11 +75,11 @@ public class MovieDbTest extends AndroidTestCase {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues testValues = MovieDbTestUtilities.createMovieTableTestValues();
-        long movieRowId = db.insert(MovieEntry.TABLE_NAME, null, testValues);
+        long movieRowId = db.insert(MovieEntry.TABLE_MOVIE, null, testValues);
         assertTrue(movieRowId != -1);
 
 
-        Cursor cursor = db.query(MovieEntry.TABLE_NAME, null, null, null, null, null, null);
+        Cursor cursor = db.query(MovieEntry.TABLE_MOVIE, null, null, null, null, null, null);
         assertTrue("Error: No Records returned from movie query", cursor.moveToFirst());
 
 
@@ -101,11 +101,11 @@ public class MovieDbTest extends AndroidTestCase {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues trailerValues = MovieDbTestUtilities.createTrailerValues(movieRowId);
-        long trailerRowId = db.insert(TrailerEntry.TABLE_NAME, null, trailerValues);
+        long trailerRowId = db.insert(TrailerEntry.TABLE_TRAILER, null, trailerValues);
         assertTrue(trailerRowId != -1);
 
 
-        Cursor trailerCursor = db.query(TrailerEntry.TABLE_NAME, null, null, null, null, null, null);
+        Cursor trailerCursor = db.query(TrailerEntry.TABLE_TRAILER, null, null, null, null, null, null);
         assertTrue( "Error: No Records returned from trailer query", trailerCursor.moveToFirst() );
 
 
@@ -126,11 +126,11 @@ public class MovieDbTest extends AndroidTestCase {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues reviewValues = MovieDbTestUtilities.createReviewValues(movieRowId);
-        long reviewRowId = db.insert(ReviewEntry.TABLE_NAME, null, reviewValues);
+        long reviewRowId = db.insert(ReviewEntry.TABLE_REVIEW, null, reviewValues);
         assertTrue(reviewRowId != -1);
 
 
-        Cursor reviewCursor = db.query(ReviewEntry.TABLE_NAME, null, null, null, null, null, null);
+        Cursor reviewCursor = db.query(ReviewEntry.TABLE_REVIEW, null, null, null, null, null, null);
         assertTrue( "Error: No Records returned from review query", reviewCursor.moveToFirst() );
 
 

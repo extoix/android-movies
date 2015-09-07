@@ -21,7 +21,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE "
-                + MovieEntry.TABLE_NAME
+                + MovieEntry.TABLE_MOVIE
                 + " ("
                 + MovieEntry._ID + " INTEGER PRIMARY KEY, "
                 + MovieEntry.ID + " TEXT UNIQUE NOT NULL, "
@@ -34,7 +34,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 +" );";
 
         final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE "
-                + TrailerEntry.TABLE_NAME
+                + TrailerEntry.TABLE_TRAILER
                 + " ("
                 + TrailerEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TrailerEntry.MOVIE_KEY + " INTEGER NOT NULL, "
@@ -42,12 +42,12 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + TrailerEntry.KEY + " TEXT NOT NULL, "
                 + TrailerEntry.NAME + " TEXT NOT NULL, "
                 + " FOREIGN KEY (" + TrailerEntry.MOVIE_KEY+ ")"
-                + " REFERENCES " + MovieEntry.TABLE_NAME + " (" + MovieEntry._ID + "), "
+                + " REFERENCES " + MovieEntry.TABLE_MOVIE + " (" + MovieEntry._ID + "), "
                 + " UNIQUE (" + TrailerEntry.ID + ", " + TrailerEntry.MOVIE_KEY + ")"
                 + " ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_REVIEW_TABLE = "CREATE TABLE "
-                + ReviewEntry.TABLE_NAME
+                + ReviewEntry.TABLE_REVIEW
                 + " ("
                 + ReviewEntry._ID +  " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ReviewEntry.MOVIE_KEY + " INTEGER NOT NULL, "
@@ -55,7 +55,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + ReviewEntry.AUTHOR + " TEXT NOT NULL, "
                 + ReviewEntry.CONTENT + " TEXT NOT NULL, "
                 + " FOREIGN KEY (" + ReviewEntry.MOVIE_KEY+ ")"
-                + " REFERENCES " + MovieEntry.TABLE_NAME + " (" + MovieEntry._ID + "), "
+                + " REFERENCES " + MovieEntry.TABLE_MOVIE + " (" + MovieEntry._ID + "), "
                 + " UNIQUE (" + ReviewEntry.ID + ", " + TrailerEntry.MOVIE_KEY + ")"
                 + " ON CONFLICT REPLACE);";
 
@@ -66,9 +66,9 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + TrailerEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + ReviewEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_MOVIE);
+        db.execSQL("DROP TABLE IF EXISTS " + TrailerEntry.TABLE_TRAILER);
+        db.execSQL("DROP TABLE IF EXISTS " + ReviewEntry.TABLE_REVIEW);
 
         onCreate(db);
     }
