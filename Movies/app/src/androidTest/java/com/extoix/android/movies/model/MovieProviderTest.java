@@ -4,8 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
 import com.extoix.android.movies.model.MovieContract.MovieEntry;
-import com.extoix.android.movies.model.MovieContract.TrailerEntry;
 import com.extoix.android.movies.model.MovieContract.ReviewEntry;
+import com.extoix.android.movies.model.MovieContract.TrailerEntry;
 
 public class MovieProviderTest extends AndroidTestCase {
 
@@ -25,6 +25,5 @@ public class MovieProviderTest extends AndroidTestCase {
 
         db.close();
     }
-
 
 }

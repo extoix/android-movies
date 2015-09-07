@@ -55,7 +55,7 @@ public class MovieContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildMovieTrailer(String movieId) {
+        public static Uri buildTrailer(String movieId) {
             return CONTENT_URI.buildUpon().appendPath(movieId).build();
         }
     }
@@ -79,7 +79,7 @@ public class MovieContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildMovieReview(String movieId) {
+        public static Uri buildReview(String movieId) {
             return CONTENT_URI.buildUpon().appendPath(movieId).build();
         }
     }
