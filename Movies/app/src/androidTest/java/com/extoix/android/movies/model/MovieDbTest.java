@@ -42,6 +42,7 @@ public class MovieDbTest extends AndroidTestCase {
 
         final HashSet<String> locationColumnHashSet = new HashSet<String>();
         locationColumnHashSet.add(MovieContract.MovieEntry._ID);
+        locationColumnHashSet.add(MovieContract.MovieEntry.ID);
         locationColumnHashSet.add(MovieContract.MovieEntry.TITLE);
         locationColumnHashSet.add(MovieContract.MovieEntry.RELEASE_DATE);
         locationColumnHashSet.add(MovieContract.MovieEntry.VOTE_AVERAGE);

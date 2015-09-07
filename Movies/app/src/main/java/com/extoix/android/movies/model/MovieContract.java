@@ -7,6 +7,7 @@ public class MovieContract {
     public static final class MovieEntry implements BaseColumns {
         public static final String TABLE_NAME = "movie";
 
+        public static final String ID = "id";
         public static final String TITLE = "title";
         public static final String RELEASE_DATE = "release_date";
         public static final String VOTE_AVERAGE = "vote_average";
@@ -18,7 +19,7 @@ public class MovieContract {
     public static final class TrailerEntry implements BaseColumns {
         public static final String TABLE_NAME = "trailer";
 
-        public static final String MOVIE_ID = "movie_id";
+        public static final String MOVIE_KEY = "movie_key";
 
         public static final String KEY = "key";
         public static final String NAME = "name";
@@ -27,7 +28,7 @@ public class MovieContract {
     public static final class ReviewEntry implements BaseColumns {
         public static final String TABLE_NAME = "review";
 
-        public static final String MOVIE_ID = "movie_id";
+        public static final String MOVIE_KEY = "movie_key";
 
         public static final String AUTHOR = "author";
         public static final String CONTENT = "content";

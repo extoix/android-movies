@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class MovieDbTestUtilities extends AndroidTestCase {
-    static final String MOVIE_ID= "76341";
+    static final String MOVIE_ID= "76341";  //"WITNESS ME!!!
 
     static ContentValues createMovieTableTestValues() {
         ContentValues testValues = new ContentValues();
-        testValues.put(MovieContract.MovieEntry._ID, MOVIE_ID);
+        testValues.put(MovieContract.MovieEntry.ID, MOVIE_ID);
         testValues.put(MovieContract.MovieEntry.TITLE, "Mad Max: Fury Road");
         testValues.put(MovieContract.MovieEntry.RELEASE_DATE, "2015-05-15");
         testValues.put(MovieContract.MovieEntry.VOTE_AVERAGE, "7.7");
