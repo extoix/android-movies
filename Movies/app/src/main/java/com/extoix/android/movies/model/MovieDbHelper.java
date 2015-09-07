@@ -37,11 +37,12 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + " ("
                 + TrailerEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TrailerEntry.MOVIE_KEY + " INTEGER NOT NULL, "
+                + TrailerEntry.ID + " TEXT NOT NULL, "
                 + TrailerEntry.KEY + " TEXT NOT NULL, "
                 + TrailerEntry.NAME + " TEXT NOT NULL, "
                 + " FOREIGN KEY (" + TrailerEntry.MOVIE_KEY+ ")"
                 + " REFERENCES " + MovieEntry.TABLE_NAME + " (" + MovieEntry._ID + "), "
-                + " UNIQUE (" + TrailerEntry.KEY + ", " + TrailerEntry.MOVIE_KEY + ")"
+                + " UNIQUE (" + TrailerEntry.ID + ", " + TrailerEntry.MOVIE_KEY + ")"
                 + " ON CONFLICT REPLACE);";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);

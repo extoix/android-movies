@@ -29,6 +29,7 @@ public class MovieDbTestUtilities extends AndroidTestCase {
     static ContentValues createTrailerValues(long movieRowId) {
         ContentValues testValues = new ContentValues();
         testValues.put(TrailerEntry.MOVIE_KEY, movieRowId);
+        testValues.put(TrailerEntry.ID, "548ce4e292514122ed002d99");
         testValues.put(TrailerEntry.KEY, "YWNWi-ZWL3c");
         testValues.put(TrailerEntry.NAME, "Official Trailer #1");
 
