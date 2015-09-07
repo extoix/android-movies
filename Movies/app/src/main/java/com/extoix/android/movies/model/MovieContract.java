@@ -11,7 +11,7 @@ public class MovieContract {
         public static final String RELEASE_DATE = "release_date";
         public static final String VOTE_AVERAGE = "vote_average";
         public static final String OVERVIEW = "overview";
-        public static final String POSER_PATH = "poster_path";
+        public static final String POSTER_PATH = "poster_path";
         public static final String POSTER_PATH_URL = "poster_path_url";
     }
 

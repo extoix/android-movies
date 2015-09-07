@@ -1,5 +1,6 @@
 package com.extoix.android.movies.model;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
@@ -45,7 +46,7 @@ public class MovieDbTest extends AndroidTestCase {
         locationColumnHashSet.add(MovieContract.MovieEntry.RELEASE_DATE);
         locationColumnHashSet.add(MovieContract.MovieEntry.VOTE_AVERAGE);
         locationColumnHashSet.add(MovieContract.MovieEntry.OVERVIEW);
-        locationColumnHashSet.add(MovieContract.MovieEntry.POSER_PATH);
+        locationColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH);
         locationColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH_URL);
 
         int columnNameIndex = c.getColumnIndex("name");
@@ -59,4 +60,24 @@ public class MovieDbTest extends AndroidTestCase {
         db.close();
     }
 
+    public void testMovieTable() {
+        MovieDbHelper dbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues testValues = MovieDbTestUtilities.createMovieTableTestValues();
+        long movieRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, testValues);
+        assertTrue(movieRowId != -1);
+
+
+        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, null, null, null, null, null, null);
+        assertTrue("Error: No Records returned from location query", cursor.moveToFirst());
+
+
+        MovieDbTestUtilities.validateCurrentRecord("Error: Location Query Validation Failed", cursor, testValues);
+        assertFalse("Error: More than one record returned from location query", cursor.moveToNext());
+
+
+        cursor.close();
+        db.close();
+    }
 }
