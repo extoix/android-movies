@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import com.extoix.android.movies.R;
 
-public class MovieDetailActivity extends ActionBarActivity {
+public class DetailActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -96,7 +96,7 @@ public class MovieFragment extends Fragment {
 
                 MovieDetail movieDetail = mMoviePosterAdapter.getItem(position);
 
-                Intent intent = new Intent(getActivity(), MovieDetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
+                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
                 startActivity(intent);
             }
         });

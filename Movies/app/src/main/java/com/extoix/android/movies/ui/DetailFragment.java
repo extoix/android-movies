@@ -13,9 +13,9 @@ import com.extoix.android.movies.R;
 import com.extoix.android.movies.model.MovieDetail;
 import com.squareup.picasso.Picasso;
 
-public class MovieDetailFragment extends Fragment {
+public class DetailFragment extends Fragment {
 
-    public MovieDetailFragment() {
+    public DetailFragment() {
     }
 
     @Override
