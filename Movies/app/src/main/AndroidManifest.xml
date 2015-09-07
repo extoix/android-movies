@@ -35,6 +35,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MovieActivity" />
         </activity>
+        <provider
+            android:authorities="com.extoix.android.movies"
+            android:name=".model.MovieProvider" />
     </application>
 
 </manifest>
