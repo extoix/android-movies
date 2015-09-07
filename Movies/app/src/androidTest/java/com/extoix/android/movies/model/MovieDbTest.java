@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+import com.extoix.android.movies.model.MovieContract.MovieEntry;
 import com.extoix.android.movies.model.MovieContract.TrailerEntry;
+import com.extoix.android.movies.model.MovieContract.ReviewEntry;
 
 import java.util.HashSet;
 
@@ -22,7 +24,7 @@ public class MovieDbTest extends AndroidTestCase {
     public void testCreateMovieDb() throws Throwable {
 
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-        tableNameHashSet.add(MovieContract.MovieEntry.TABLE_NAME);
+        tableNameHashSet.add(MovieEntry.TABLE_NAME);
 
         SQLiteDatabase db = new MovieDbHelper(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
@@ -38,19 +40,19 @@ public class MovieDbTest extends AndroidTestCase {
         assertTrue("Error: Your database was created without all entry tables", tableNameHashSet.isEmpty());
 
 
-        c = db.rawQuery("PRAGMA table_info(" + MovieContract.MovieEntry.TABLE_NAME + ")", null);
+        c = db.rawQuery("PRAGMA table_info(" + MovieEntry.TABLE_NAME + ")", null);
         assertTrue("Error: This means that we were unable to query the database for table information.", c.moveToFirst());
 
 
         final HashSet<String> movieColumnHashSet = new HashSet<String>();
-        movieColumnHashSet.add(MovieContract.MovieEntry._ID);
-        movieColumnHashSet.add(MovieContract.MovieEntry.ID);
-        movieColumnHashSet.add(MovieContract.MovieEntry.TITLE);
-        movieColumnHashSet.add(MovieContract.MovieEntry.RELEASE_DATE);
-        movieColumnHashSet.add(MovieContract.MovieEntry.VOTE_AVERAGE);
-        movieColumnHashSet.add(MovieContract.MovieEntry.OVERVIEW);
-        movieColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH);
-        movieColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH_URL);
+        movieColumnHashSet.add(MovieEntry._ID);
+        movieColumnHashSet.add(MovieEntry.ID);
+        movieColumnHashSet.add(MovieEntry.TITLE);
+        movieColumnHashSet.add(MovieEntry.RELEASE_DATE);
+        movieColumnHashSet.add(MovieEntry.VOTE_AVERAGE);
+        movieColumnHashSet.add(MovieEntry.OVERVIEW);
+        movieColumnHashSet.add(MovieEntry.POSTER_PATH);
+        movieColumnHashSet.add(MovieEntry.POSTER_PATH_URL);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
@@ -73,11 +75,11 @@ public class MovieDbTest extends AndroidTestCase {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues testValues = MovieDbTestUtilities.createMovieTableTestValues();
-        long movieRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, testValues);
+        long movieRowId = db.insert(MovieEntry.TABLE_NAME, null, testValues);
         assertTrue(movieRowId != -1);
 
 
-        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, null, null, null, null, null, null);
+        Cursor cursor = db.query(MovieEntry.TABLE_NAME, null, null, null, null, null, null);
         assertTrue("Error: No Records returned from movie query", cursor.moveToFirst());
 
 
@@ -112,6 +114,31 @@ public class MovieDbTest extends AndroidTestCase {
 
 
         trailerCursor.close();
+        dbHelper.close();
+    }
+
+    public void testReviewTable() {
+        long movieRowId = insertMovie();
+        assertFalse("Error: Movie Not Inserted Correctly", movieRowId == -1L);
+
+
+        MovieDbHelper dbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues reviewValues = MovieDbTestUtilities.createReviewValues(movieRowId);
+        long reviewRowId = db.insert(ReviewEntry.TABLE_NAME, null, reviewValues);
+        assertTrue(reviewRowId != -1);
+
+
+        Cursor reviewCursor = db.query(ReviewEntry.TABLE_NAME, null, null, null, null, null, null);
+        assertTrue( "Error: No Records returned from review query", reviewCursor.moveToFirst() );
+
+
+        MovieDbTestUtilities.validateCurrentRecord("testInsertReadDb reviewEntry failed to validate", reviewCursor, reviewValues);
+        assertFalse("Error: More than one record returned from review query", reviewCursor.moveToNext());
+
+
+        reviewCursor.close();
         dbHelper.close();
     }
 }

@@ -6,6 +6,7 @@ import android.test.AndroidTestCase;
 
 import com.extoix.android.movies.model.MovieContract.MovieEntry;
 import com.extoix.android.movies.model.MovieContract.TrailerEntry;
+import com.extoix.android.movies.model.MovieContract.ReviewEntry;
 
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,16 @@ public class MovieDbTestUtilities extends AndroidTestCase {
         testValues.put(TrailerEntry.ID, "548ce4e292514122ed002d99");
         testValues.put(TrailerEntry.KEY, "YWNWi-ZWL3c");
         testValues.put(TrailerEntry.NAME, "Official Trailer #1");
+
+        return testValues;
+    }
+
+    static ContentValues createReviewValues(long movieRowId) {
+        ContentValues testValues = new ContentValues();
+        testValues.put(ReviewEntry.MOVIE_KEY, movieRowId);
+        testValues.put(ReviewEntry.ID, "55660928c3a3687ad7001db1");
+        testValues.put(ReviewEntry.AUTHOR, "Phileas Fogg");
+        testValues.put(ReviewEntry.CONTENT, "Fabulous action movie. Lots of interesting characters. They don't make many movies like this. The whole movie from start to finish was entertaining I'm looking forward to seeing it again. I definitely recommend seeing it.");
 
         return testValues;
     }

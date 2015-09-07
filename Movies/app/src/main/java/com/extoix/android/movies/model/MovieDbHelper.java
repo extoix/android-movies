@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.extoix.android.movies.model.MovieContract.MovieEntry;
 import com.extoix.android.movies.model.MovieContract.TrailerEntry;
+import com.extoix.android.movies.model.MovieContract.ReviewEntry;
 
 public class MovieDbHelper extends SQLiteOpenHelper {
 
@@ -45,14 +46,29 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + " UNIQUE (" + TrailerEntry.ID + ", " + TrailerEntry.MOVIE_KEY + ")"
                 + " ON CONFLICT REPLACE);";
 
+        final String SQL_CREATE_REVIEW_TABLE = "CREATE TABLE "
+                + ReviewEntry.TABLE_NAME
+                + " ("
+                + ReviewEntry._ID +  " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ReviewEntry.MOVIE_KEY + " INTEGER NOT NULL, "
+                + ReviewEntry.ID + " TEXT NOT NULL, "
+                + ReviewEntry.AUTHOR + " TEXT NOT NULL, "
+                + ReviewEntry.CONTENT + " TEXT NOT NULL, "
+                + " FOREIGN KEY (" + ReviewEntry.MOVIE_KEY+ ")"
+                + " REFERENCES " + MovieEntry.TABLE_NAME + " (" + MovieEntry._ID + "), "
+                + " UNIQUE (" + ReviewEntry.ID + ", " + TrailerEntry.MOVIE_KEY + ")"
+                + " ON CONFLICT REPLACE);";
+
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
         db.execSQL(SQL_CREATE_TRAILER_TABLE);
+        db.execSQL(SQL_CREATE_REVIEW_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TrailerEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + ReviewEntry.TABLE_NAME);
 
         onCreate(db);
     }
