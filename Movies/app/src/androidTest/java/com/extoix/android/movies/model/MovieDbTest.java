@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+import com.extoix.android.movies.model.MovieContract.TrailerEntry;
+
 import java.util.HashSet;
 
 public class MovieDbTest extends AndroidTestCase {
@@ -33,35 +35,40 @@ public class MovieDbTest extends AndroidTestCase {
         do {
             tableNameHashSet.remove(c.getString(0));
         } while( c.moveToNext() );
-        assertTrue("Error: Your database was created without both the location entry and weather entry tables", tableNameHashSet.isEmpty());
+        assertTrue("Error: Your database was created without all entry tables", tableNameHashSet.isEmpty());
 
 
         c = db.rawQuery("PRAGMA table_info(" + MovieContract.MovieEntry.TABLE_NAME + ")", null);
         assertTrue("Error: This means that we were unable to query the database for table information.", c.moveToFirst());
 
 
-        final HashSet<String> locationColumnHashSet = new HashSet<String>();
-        locationColumnHashSet.add(MovieContract.MovieEntry._ID);
-        locationColumnHashSet.add(MovieContract.MovieEntry.ID);
-        locationColumnHashSet.add(MovieContract.MovieEntry.TITLE);
-        locationColumnHashSet.add(MovieContract.MovieEntry.RELEASE_DATE);
-        locationColumnHashSet.add(MovieContract.MovieEntry.VOTE_AVERAGE);
-        locationColumnHashSet.add(MovieContract.MovieEntry.OVERVIEW);
-        locationColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH);
-        locationColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH_URL);
+        final HashSet<String> movieColumnHashSet = new HashSet<String>();
+        movieColumnHashSet.add(MovieContract.MovieEntry._ID);
+        movieColumnHashSet.add(MovieContract.MovieEntry.ID);
+        movieColumnHashSet.add(MovieContract.MovieEntry.TITLE);
+        movieColumnHashSet.add(MovieContract.MovieEntry.RELEASE_DATE);
+        movieColumnHashSet.add(MovieContract.MovieEntry.VOTE_AVERAGE);
+        movieColumnHashSet.add(MovieContract.MovieEntry.OVERVIEW);
+        movieColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH);
+        movieColumnHashSet.add(MovieContract.MovieEntry.POSTER_PATH_URL);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
             String columnName = c.getString(columnNameIndex);
-            locationColumnHashSet.remove(columnName);
+            movieColumnHashSet.remove(columnName);
         } while(c.moveToNext());
-        assertTrue("Error: The database doesn't contain all of the required location entry columns", locationColumnHashSet.isEmpty());
+        assertTrue("Error: The database doesn't contain all of the required movie entry columns", movieColumnHashSet.isEmpty());
 
 
         db.close();
     }
 
     public void testMovieTable() {
+        insertMovie();
+    }
+
+    public long insertMovie() {
+
         MovieDbHelper dbHelper = new MovieDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -71,14 +78,40 @@ public class MovieDbTest extends AndroidTestCase {
 
 
         Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, null, null, null, null, null, null);
-        assertTrue("Error: No Records returned from location query", cursor.moveToFirst());
+        assertTrue("Error: No Records returned from movie query", cursor.moveToFirst());
 
 
-        MovieDbTestUtilities.validateCurrentRecord("Error: Location Query Validation Failed", cursor, testValues);
-        assertFalse("Error: More than one record returned from location query", cursor.moveToNext());
+        MovieDbTestUtilities.validateCurrentRecord("Error: Movie Query Validation Failed", cursor, testValues);
+        assertFalse("Error: More than one record returned from movie query", cursor.moveToNext());
 
 
         cursor.close();
         db.close();
+        return movieRowId;
+    }
+
+    public void testTrailerTable() {
+        long movieRowId = insertMovie();
+        assertFalse("Error: Movie Not Inserted Correctly", movieRowId == -1L);
+
+
+        MovieDbHelper dbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues trailerValues = MovieDbTestUtilities.createTrailerValues(movieRowId);
+        long trailerRowId = db.insert(TrailerEntry.TABLE_NAME, null, trailerValues);
+        assertTrue(trailerRowId != -1);
+
+
+        Cursor trailerCursor = db.query(TrailerEntry.TABLE_NAME, null, null, null, null, null, null);
+        assertTrue( "Error: No Records returned from trailer query", trailerCursor.moveToFirst() );
+
+
+        MovieDbTestUtilities.validateCurrentRecord("testInsertReadDb trailerEntry failed to validate", trailerCursor, trailerValues);
+        assertFalse("Error: More than one record returned from trailer query", trailerCursor.moveToNext());
+
+
+        trailerCursor.close();
+        dbHelper.close();
     }
 }
