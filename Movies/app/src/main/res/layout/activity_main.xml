@@ -3,6 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:layout="@layout/fragment_main"
     android:id="@+id/fragment"
-    android:name="com.extoix.android.movies.MovieFragment"
+    android:name="com.extoix.android.movies.ui.MovieFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

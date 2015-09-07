@@ -1,4 +1,4 @@
-package com.extoix.android.movies;
+package com.extoix.android.movies.retrofit;
 
 import retrofit.Callback;
 import retrofit.http.GET;

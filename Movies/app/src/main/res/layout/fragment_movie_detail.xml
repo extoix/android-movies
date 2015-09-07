@@ -1,7 +1,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.extoix.android.movies.MovieDetailActivityFragment"
+    tools:context="com.extoix.android.movies.ui.MovieDetailFragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 

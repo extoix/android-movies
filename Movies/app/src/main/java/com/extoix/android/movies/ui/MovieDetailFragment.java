@@ -1,4 +1,4 @@
-package com.extoix.android.movies;
+package com.extoix.android.movies.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.extoix.android.movies.R;
+import com.extoix.android.movies.model.MovieDetail;
 import com.squareup.picasso.Picasso;
 
-public class MovieDetailActivityFragment extends Fragment {
+public class MovieDetailFragment extends Fragment {
 
-    public MovieDetailActivityFragment() {
+    public MovieDetailFragment() {
     }
 
     @Override

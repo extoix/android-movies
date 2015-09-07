@@ -1,4 +1,4 @@
-package com.extoix.android.movies;
+package com.extoix.android.movies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
