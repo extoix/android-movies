@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.extoix.android.movies.model.MovieContract.MovieEntry;
@@ -18,12 +19,46 @@ public class MovieProvider extends ContentProvider {
 
     static final int MOVIE = 100;
     static final int MOVIE_WITH_MOVIE_ID = 101;
+    static final int MOVIETRAILER_WITH_MOVIE_ID = 150;
 
     static final int TRAILER = 200;
     static final int TRAILER_WITH_MOVIE_ID = 201;
 
     static final int REVIEW = 300;
     static final int REVIEW_WITH_MOVIE_ID = 301;
+
+    private static final SQLiteQueryBuilder sMovieTrailerByMovieIdQueryBuilder;
+
+    static {
+        sMovieTrailerByMovieIdQueryBuilder = new SQLiteQueryBuilder();
+
+        //This is an inner join which looks like
+        //trailer INNER JOIN movie ON trailer.movie_key = movie._id
+        sMovieTrailerByMovieIdQueryBuilder.setTables(TrailerEntry.TABLE_TRAILER
+                + " INNER JOIN " + MovieEntry.TABLE_MOVIE
+                + " ON " + TrailerEntry.TABLE_TRAILER + "." + TrailerEntry.MOVIE_KEY
+                + " = " + MovieEntry.TABLE_MOVIE + "." + MovieEntry._ID);
+    }
+
+    //movie.id = ?
+    private static final String sMovieIdSelection = MovieEntry.TABLE_MOVIE + "." + MovieEntry.ID + " = ? ";
+
+    private Cursor getMovieTrailerByMovieId(Uri uri, String[] projection, String sortOrder) {
+        String movieId = TrailerEntry.getMovieIdFromUri(uri);
+        String[] selectionArgs = new String[]{movieId};
+
+        Cursor movieTrailerCursor = sMovieTrailerByMovieIdQueryBuilder.query(
+                mMovieDbHelper.getReadableDatabase(),
+                projection,
+                sMovieIdSelection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+
+        return movieTrailerCursor;
+    }
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -60,6 +95,9 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_WITH_MOVIE_ID:{
                 return MovieEntry.CONTENT_ITEM_TYPE;
             }
+            case MOVIETRAILER_WITH_MOVIE_ID: {
+                return TrailerEntry.CONTENT_ITEM_TYPE;
+            }
             case TRAILER:{
                 return TrailerEntry.CONTENT_DIR_TYPE;
             }
@@ -81,6 +119,7 @@ public class MovieProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor;
+
         switch(sUriMatcher.match(uri)){
             case MOVIE:{
                 cursor = mMovieDbHelper.getReadableDatabase().query(
@@ -91,7 +130,6 @@ public class MovieProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
-                return cursor;
             }
             case MOVIE_WITH_MOVIE_ID:{
                 cursor = mMovieDbHelper.getReadableDatabase().query(
@@ -102,12 +140,18 @@ public class MovieProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
-                return cursor;
+            }
+            case MOVIETRAILER_WITH_MOVIE_ID: {
+                cursor = getMovieTrailerByMovieId(uri, projection, sortOrder);
+                break;
             }
             default:{
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
         }
+
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Override

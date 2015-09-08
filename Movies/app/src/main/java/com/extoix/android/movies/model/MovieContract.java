@@ -58,6 +58,10 @@ public class MovieContract {
         public static Uri buildTrailer(String movieId) {
             return CONTENT_URI.buildUpon().appendPath(movieId).build();
         }
+
+        public static String getMovieIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
     }
 
     public static final class ReviewEntry implements BaseColumns {

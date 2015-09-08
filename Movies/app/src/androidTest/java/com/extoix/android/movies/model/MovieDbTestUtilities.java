@@ -88,16 +88,20 @@ public class MovieDbTestUtilities extends AndroidTestCase {
         return movieRowId;
     }
 
-    static void insertMultipleMovieValues(Context context) {
+    static void insertMultipleMovieTrailerValues(Context context) {
         MovieDbHelper dbHelper = new MovieDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues testValues = createMovieValues();
-        long movieRowId = db.insert(MovieEntry.TABLE_MOVIE, null, testValues);
+        ContentValues movieValues = createMovieValues();
+        long movieRowId = db.insert(MovieEntry.TABLE_MOVIE, null, movieValues);
         assertTrue("Error: Failure to insert Movie Values", movieRowId != -1);
 
-        ContentValues testValues2 = createMovieValues2();
-        long movieRowId2 = db.insert(MovieEntry.TABLE_MOVIE, null, testValues2);
+        ContentValues trailerValues = createTrailerValues(movieRowId);
+        long trailerRowId = db.insert(TrailerEntry.TABLE_TRAILER, null, trailerValues);
+        assertTrue("Error: Failure to insert Trailer Values", trailerRowId != -1);
+
+        ContentValues movieValues2 = createMovieValues2();
+        long movieRowId2 = db.insert(MovieEntry.TABLE_MOVIE, null, movieValues2);
         assertTrue("Error: Failure to insert Movie Values", movieRowId2 != -1);
 
         db.close();

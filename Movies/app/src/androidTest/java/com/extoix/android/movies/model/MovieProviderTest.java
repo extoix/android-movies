@@ -62,7 +62,7 @@ public class MovieProviderTest extends AndroidTestCase {
     }
 
     public void testMoveQueryWithMovieId() {
-        MovieDbTestUtilities.insertMultipleMovieValues(mContext);
+        MovieDbTestUtilities.insertMultipleMovieTrailerValues(mContext);
 
         ContentValues testValues = MovieDbTestUtilities.createMovieValues();
         Cursor movieCursor = mContentResolver.query(MovieEntry.buildMovie(MovieDbTestUtilities.MOVIE_ID), null, null, null, null);
