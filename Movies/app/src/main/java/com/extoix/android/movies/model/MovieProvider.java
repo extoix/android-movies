@@ -209,11 +209,52 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+
+        int rowsDeleted;
+        // this makes delete all rows return the number of rows deleted
+        if ( null == selection ) selection = "1";
+
+        switch (sUriMatcher.match(uri)) {
+            case MOVIE:
+                rowsDeleted = db.delete(MovieEntry.TABLE_MOVIE, selection, selectionArgs);
+                break;
+            case TRAILER:
+                rowsDeleted = db.delete(TrailerEntry.TABLE_TRAILER, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Because a null deletes all rows
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+
+        int rowsUpdated;
+
+        switch (sUriMatcher.match(uri)) {
+            case MOVIE:
+                rowsUpdated = db.update(MovieEntry.TABLE_MOVIE, values, selection, selectionArgs);
+                break;
+            case TRAILER:
+                rowsUpdated = db.update(TrailerEntry.TABLE_TRAILER, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
     }
 }

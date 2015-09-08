@@ -117,4 +117,76 @@ public class MovieProviderTest extends AndroidTestCase {
 //        trailerCursor = mContext.getContentResolver().query(TrailerEntry.buildTrailer(MovieDbTestUtilities.MOVIE_ID), null, null, null, null);
 //        MovieDbTestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Trailer and Movie Data.", trailerCursor, trailerValues);
     }
+
+    public void testDeleteRecords() {
+        testInsertReadProvider();
+
+        MovieDbTestUtilities.TestContentObserver movieTco = MovieDbTestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, movieTco);
+
+        MovieDbTestUtilities.TestContentObserver trailerTco = MovieDbTestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(TrailerEntry.CONTENT_URI, true, trailerTco);
+
+        deleteAllRecordsFromProvider();
+
+        movieTco.waitForNotificationOrFail();
+        trailerTco.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(movieTco);
+        mContext.getContentResolver().unregisterContentObserver(trailerTco);
+    }
+
+    public void deleteAllRecordsFromProvider() {
+        mContext.getContentResolver().delete(TrailerEntry.CONTENT_URI, null, null);
+        mContext.getContentResolver().delete(MovieEntry.CONTENT_URI, null, null);
+
+        Cursor cursor = mContext.getContentResolver().query(TrailerEntry.CONTENT_URI, null, null, null, null);
+        assertEquals("Error: Records not deleted from Trailer table during delete", 0, cursor.getCount());
+        cursor.close();
+
+        cursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI, null, null, null, null);
+        assertEquals("Error: Records not deleted from Movie table during delete", 0, cursor.getCount());
+        cursor.close();
+    }
+
+    public void testUpdateMovie() {
+        ContentValues values = MovieDbTestUtilities.createMovieValues();
+
+        Uri movieUri = mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, values);
+        long movieRowId = ContentUris.parseId(movieUri);
+        assertTrue(movieRowId != -1);
+//        Log.d(LOG_TAG, "New row id: " + movieRowId);
+
+        ContentValues updatedValues = new ContentValues(values);
+        updatedValues.put(MovieEntry._ID, movieRowId);
+        updatedValues.put(MovieEntry.OVERVIEW, "Testing new overview text");
+
+        Cursor movieCursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI, null, null, null, null);
+
+        MovieDbTestUtilities.TestContentObserver tco = MovieDbTestUtilities.getTestContentObserver();
+        movieCursor.registerContentObserver(tco);
+
+        int count = mContext.getContentResolver().update(
+                MovieEntry.CONTENT_URI,
+                updatedValues,
+                MovieEntry._ID + "= ?",
+                new String[] { Long.toString(movieRowId)});
+        assertEquals(count, 1);
+
+        tco.waitForNotificationOrFail();
+
+        movieCursor.unregisterContentObserver(tco);
+        movieCursor.close();
+
+        Cursor cursor = mContext.getContentResolver().query(
+                MovieEntry.CONTENT_URI,
+                null,
+                MovieEntry._ID + " = " + movieRowId,
+                null,
+                null);
+
+        MovieDbTestUtilities.validateCursor("testUpdateMovie.  Error validating movie entry update.", cursor, updatedValues);
+
+        cursor.close();
+    }
 }
