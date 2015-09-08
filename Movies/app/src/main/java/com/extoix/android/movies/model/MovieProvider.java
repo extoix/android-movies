@@ -6,12 +6,11 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.extoix.android.movies.model.MovieContract.MovieEntry;
-import com.extoix.android.movies.model.MovieContract.TrailerEntry;
 import com.extoix.android.movies.model.MovieContract.ReviewEntry;
+import com.extoix.android.movies.model.MovieContract.TrailerEntry;
 
 public class MovieProvider extends ContentProvider {
 
@@ -28,38 +27,38 @@ public class MovieProvider extends ContentProvider {
     static final int REVIEW = 300;
     static final int REVIEW_WITH_MOVIE_ID = 301;
 
-    private static final SQLiteQueryBuilder sMovieTrailerByMovieIdQueryBuilder;
+//    private static final SQLiteQueryBuilder sMovieTrailerByMovieIdQueryBuilder;
 
-    static {
-        sMovieTrailerByMovieIdQueryBuilder = new SQLiteQueryBuilder();
-
-        //This is an inner join which looks like
-        //trailer INNER JOIN movie ON trailer.movie_key = movie._id
-        sMovieTrailerByMovieIdQueryBuilder.setTables(TrailerEntry.TABLE_TRAILER
-                + " INNER JOIN " + MovieEntry.TABLE_MOVIE
-                + " ON " + TrailerEntry.TABLE_TRAILER + "." + TrailerEntry.MOVIE_KEY
-                + " = " + MovieEntry.TABLE_MOVIE + "." + MovieEntry._ID);
-    }
+//    static {
+//        sMovieTrailerByMovieIdQueryBuilder = new SQLiteQueryBuilder();
+//
+//        //This is an inner join which looks like
+//        //trailer INNER JOIN movie ON trailer.movie_key = movie._id
+//        sMovieTrailerByMovieIdQueryBuilder.setTables(TrailerEntry.TABLE_TRAILER
+//                + " INNER JOIN " + MovieEntry.TABLE_MOVIE
+//                + " ON " + TrailerEntry.TABLE_TRAILER + "." + TrailerEntry.MOVIE_KEY
+//                + " = " + MovieEntry.TABLE_MOVIE + "." + MovieEntry._ID);
+//    }
 
     //movie.id = ?
-    private static final String sMovieIdSelection = MovieEntry.TABLE_MOVIE + "." + MovieEntry.ID + " = ? ";
+//    private static final String sMovieIdSelection = MovieEntry.TABLE_MOVIE + "." + MovieEntry.ID + " = ? ";
 
-    private Cursor getMovieTrailerByMovieId(Uri uri, String[] projection, String sortOrder) {
-        String movieId = TrailerEntry.getMovieIdFromUri(uri);
-        String[] selectionArgs = new String[]{movieId};
-
-        Cursor movieTrailerCursor = sMovieTrailerByMovieIdQueryBuilder.query(
-                mMovieDbHelper.getReadableDatabase(),
-                projection,
-                sMovieIdSelection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder
-        );
-
-        return movieTrailerCursor;
-    }
+//    private Cursor getMovieTrailerByMovieId(Uri uri, String[] projection, String sortOrder) {
+//        String movieId = TrailerEntry.getMovieIdFromUri(uri);
+//        String[] selectionArgs = new String[]{movieId};
+//
+//        Cursor movieTrailerCursor = sMovieTrailerByMovieIdQueryBuilder.query(
+//                mMovieDbHelper.getReadableDatabase(),
+//                projection,
+//                sMovieIdSelection,
+//                selectionArgs,
+//                null,
+//                null,
+//                sortOrder
+//        );
+//
+//        return movieTrailerCursor;
+//    }
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -87,18 +86,16 @@ public class MovieProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
 
-        final int match = sUriMatcher.match(uri);
-
-        switch (match){
+        switch (sUriMatcher.match(uri)){
             case MOVIE:{
                 return MovieEntry.CONTENT_DIR_TYPE;
             }
             case MOVIE_WITH_MOVIE_ID:{
                 return MovieEntry.CONTENT_ITEM_TYPE;
             }
-            case MOVIETRAILER_WITH_MOVIE_ID: {
-                return TrailerEntry.CONTENT_ITEM_TYPE;
-            }
+//            case MOVIETRAILER_WITH_MOVIE_ID: {
+//                return TrailerEntry.CONTENT_ITEM_TYPE;
+//            }
             case TRAILER:{
                 return TrailerEntry.CONTENT_DIR_TYPE;
             }
@@ -131,6 +128,7 @@ public class MovieProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
             }
             case MOVIE_WITH_MOVIE_ID:{
                 cursor = mMovieDbHelper.getReadableDatabase().query(
@@ -141,9 +139,32 @@ public class MovieProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
             }
-            case MOVIETRAILER_WITH_MOVIE_ID: {
-                cursor = getMovieTrailerByMovieId(uri, projection, sortOrder);
+//            case MOVIETRAILER_WITH_MOVIE_ID: {
+//                cursor = getMovieTrailerByMovieId(uri, projection, sortOrder);
+//                break;
+//            }
+            case TRAILER:{
+                cursor = mMovieDbHelper.getReadableDatabase().query(
+                        TrailerEntry.TABLE_TRAILER,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            }
+            case TRAILER_WITH_MOVIE_ID:{
+                cursor = mMovieDbHelper.getReadableDatabase().query(
+                        TrailerEntry.TABLE_TRAILER,
+                        projection,
+                        TrailerEntry.ID + " = ?",
+                        new String[] {String.valueOf(ContentUris.parseId(uri))},
+                        null,
+                        null,
+                        sortOrder);
                 break;
             }
             default:{
@@ -165,6 +186,14 @@ public class MovieProvider extends ContentProvider {
                 long movieRowId = db.insert(MovieEntry.TABLE_MOVIE, null, values);
                 if ( movieRowId > 0 )
                     returnUri = MovieEntry.buildMovieUri(movieRowId);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case TRAILER: {
+                long trailerRowId = db.insert(TrailerEntry.TABLE_TRAILER, null, values);
+                if ( trailerRowId > 0 )
+                    returnUri = TrailerEntry.builTrailerUri(trailerRowId);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
