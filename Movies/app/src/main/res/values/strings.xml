@@ -11,8 +11,10 @@
     <string name="pref_sort_label">Sort Order</string>
     <string name="pref_sort_label_popularity">Popularity</string>
     <string name="pref_sort_label_highestRating">Highest Rating</string>
+    <string name="pref_sort_label_favorite">Favorite</string>
     <string name="pref_sort_key" translatable="false">sort</string>
     <string name="pref_sort_popularity" translatable="false">popularity.desc</string>
     <string name="pref_sort_highestRating" translatable="false">vote_average.desc</string>
+    <string name="pref_sort_favorite" translatable="false">favorite.desc</string>
 
 </resources>
