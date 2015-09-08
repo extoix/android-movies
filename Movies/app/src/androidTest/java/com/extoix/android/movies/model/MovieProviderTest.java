@@ -1,5 +1,6 @@
 package com.extoix.android.movies.model;
 
+import android.content.ContentResolver;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
@@ -26,4 +27,19 @@ public class MovieProviderTest extends AndroidTestCase {
         db.close();
     }
 
+    public void testGetType() {
+
+        ContentResolver contentResolver = mContext.getContentResolver();
+
+        // content://com.extoix.android.movies/movie
+        String type = contentResolver.getType(MovieEntry.CONTENT_URI);
+        // vnd.android.cursor.dir/com.extoix.android.movies/movie
+        assertEquals("Error: the MovieEntry CONTENT_URI should return MovieEntry.CONTENT_TYPE", MovieEntry.CONTENT_DIR_TYPE, type);
+
+        // content://com/extoix.android.movies/movie/76341
+        String testMovieId = "76341";
+        type = contentResolver.getType(MovieEntry.buildMovie(testMovieId));
+        // vnd.android.cursor.dir/com.extoix.android.movies/movie/76341
+        assertEquals("Error: the MovieEntry CONTENT_URI with movie id should return MovieEntry.CONTENT_ITEM_TYPE", MovieEntry.CONTENT_ITEM_TYPE, type);
+    }
 }
