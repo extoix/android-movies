@@ -97,7 +97,7 @@ public class MovieProvider extends ContentProvider {
                 cursor = mMovieDbHelper.getReadableDatabase().query(
                         MovieEntry.TABLE_MOVIE,
                         projection,
-                        MovieEntry._ID,
+                        MovieEntry.ID + " = ?",
                         new String[] {String.valueOf(ContentUris.parseId(uri))},
                         null,
                         null,

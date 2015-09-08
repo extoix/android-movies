@@ -74,7 +74,7 @@ public class MovieDbTest extends AndroidTestCase {
         MovieDbHelper dbHelper = new MovieDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues testValues = MovieDbTestUtilities.createMovieTableTestValues();
+        ContentValues testValues = MovieDbTestUtilities.createMovieValues();
         long movieRowId = db.insert(MovieEntry.TABLE_MOVIE, null, testValues);
         assertTrue(movieRowId != -1);
 
