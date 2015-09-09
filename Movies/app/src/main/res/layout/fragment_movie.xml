@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivityFragment">
+    tools:context="com.extoix.android.movies.ui.MovieFragment">
 
     <GridView
         android:id="@+id/movie_poster_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="184dp"
+        android:columnWidth="180dp"
         android:numColumns="auto_fit" />
 
 </FrameLayout>
