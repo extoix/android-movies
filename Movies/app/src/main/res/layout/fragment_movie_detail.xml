@@ -5,11 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <fragment
-        android:id="@+id/detail_fragment"
-        android:name="com.extoix.android.movies.ui.DetailFragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_detail" />
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/detail_fragment"
+            android:name="com.extoix.android.movies.ui.DetailFragment"
+            tools:layout="@layout/fragment_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <fragment
+            android:id="@+id/trailer_fragment"
+            android:name="com.extoix.android.movies.ui.TrailerFragment"
+            tools:layout="@layout/fragment_trailer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <fragment
+            android:id="@+id/review_fragment"
+            android:name="com.extoix.android.movies.ui.ReviewFragment"
+            tools:layout="@layout/fragment_review"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 </ScrollView>

@@ -6,6 +6,8 @@
 
     <string name="title_activity_movie_detail">Movie Detail</string>
     <string name="label_make_favorite">Make Favorite</string>
+    <string name="label_header_trailer">Trailers:</string>
+    <string name="label_header_review">Reviews:</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
@@ -18,8 +20,5 @@
     <string name="pref_sort_popularity" translatable="false">popularity.desc</string>
     <string name="pref_sort_highestRating" translatable="false">vote_average.desc</string>
     <string name="pref_sort_favorite" translatable="false">favorite.desc</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
