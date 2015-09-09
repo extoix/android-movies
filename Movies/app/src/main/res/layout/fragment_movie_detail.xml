@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="left"
-                        android:text="Make favorite" />
+                        android:text="@string/label_make_favorite" />
 
                 </LinearLayout>
 

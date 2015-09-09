@@ -1,12 +1,14 @@
 <resources>
 
     <string name="app_name">Movies</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_movie_detail">Movie Detail</string>
-    <string name="title_activity_settings">Settings</string>
-
     <string name="themoviedb_api_url">http://api.themoviedb.org</string>
     <string name="themoviedb_image_base_url">http://image.tmdb.org/t/p/w184</string>
+
+    <string name="title_activity_movie_detail">Movie Detail</string>
+    <string name="label_make_favorite">Make Favorite</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
 
     <string name="pref_sort_label">Sort Order</string>
     <string name="pref_sort_label_popularity">Popularity</string>
