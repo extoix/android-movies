@@ -10,10 +10,24 @@ import com.extoix.android.movies.R;
 
 public class MovieActivity extends ActionBarActivity {
 
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private boolean mTwoPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container, new MovieDetailFragment(), DETAILFRAGMENT_TAG).commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
     }
 
 
@@ -38,5 +52,11 @@ public class MovieActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MovieFragment movieFragment = (MovieFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_movie);
     }
 }

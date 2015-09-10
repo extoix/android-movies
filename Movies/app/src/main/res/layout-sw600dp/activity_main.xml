@@ -9,7 +9,7 @@
     tools:context="com.extoix.android.movies.ui.MovieActivity">
 
     <fragment
-        android:id="@+id/fragment_main"
+        android:id="@+id/fragment_movie"
         android:name="com.extoix.android.movies.ui.MovieFragment"
         tools:layout="@layout/fragment_movie"
         android:layout_width="0dp"
