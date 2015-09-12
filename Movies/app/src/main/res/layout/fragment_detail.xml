@@ -63,6 +63,7 @@
                         android:text="@string/label_make_favorite" />
 
                     <CheckBox
+                        android:id="@+id/movie_detail_favorite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"

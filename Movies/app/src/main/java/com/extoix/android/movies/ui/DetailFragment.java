@@ -1,11 +1,15 @@
 package com.extoix.android.movies.ui;
 
-import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,6 +40,8 @@ public class DetailFragment extends Fragment {
             movieDetail = (MovieDetail) intent.getParcelableExtra(Intent.EXTRA_TEXT);
         }
 
+        final String movieDetailId = movieDetail.getId();
+
         if(movieDetail != null) {
             ((TextView)rootView.findViewById(R.id.movie_detail_title)).setText(movieDetail.getTitle());
 
@@ -44,10 +50,40 @@ public class DetailFragment extends Fragment {
 
             ((TextView)rootView.findViewById(R.id.movie_detail_releaseDate)).setText(movieDetail.getRelease_date());
             ((TextView)rootView.findViewById(R.id.movie_detail_voteAverage)).setText(movieDetail.getVote_average());
+            createFavoriteCheckbox(rootView, movieDetail, movieDetailId);
             ((TextView)rootView.findViewById(R.id.movie_detail_overview)).setText(movieDetail.getOverview());
         }
 
         return rootView;
+    }
+
+    private void createFavoriteCheckbox(View rootView, MovieDetail movieDetail, final String movieDetailId) {
+        CheckBox favoriteCheckbox = ((CheckBox)rootView.findViewById(R.id.movie_detail_favorite));
+
+        final String movieId = movieDetail.getId();
+        SharedPreferences favoriteSharedPreferences = getActivity().getSharedPreferences(getString(R.string.favorite_pref_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = favoriteSharedPreferences.edit();
+        String retrievedMovieDetailId = favoriteSharedPreferences.getString(movieId, null);
+
+        if(retrievedMovieDetailId != null) {
+            favoriteCheckbox.setChecked(true);
+        }
+
+        favoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences favoriteSharedPreferences = getActivity().getSharedPreferences(getString(R.string.favorite_pref_key), Context.MODE_PRIVATE);
+
+                String retrievedMovieDetailId = favoriteSharedPreferences.getString(movieDetailId, null);
+
+                SharedPreferences.Editor editor = favoriteSharedPreferences.edit();
+                if(isChecked && retrievedMovieDetailId == null ) {
+                    editor.putString(movieDetailId, movieDetailId).commit();
+                } else {
+                    editor.remove(movieDetailId).commit();
+                }
+            }
+        });
     }
 
 }
