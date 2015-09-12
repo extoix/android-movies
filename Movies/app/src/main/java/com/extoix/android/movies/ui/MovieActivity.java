@@ -7,8 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.extoix.android.movies.R;
+import com.extoix.android.movies.model.MovieDetail;
 
-public class MovieActivity extends ActionBarActivity {
+public class MovieActivity extends ActionBarActivity implements MovieFragment.MovieCallback {
 
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private boolean mTwoPane;
@@ -23,7 +24,7 @@ public class MovieActivity extends ActionBarActivity {
             mTwoPane = true;
 
             if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container, new MovieDetailFragment(), DETAILFRAGMENT_TAG).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container, new DetailFragment(), DETAILFRAGMENT_TAG).commit();
             }
         } else {
             mTwoPane = false;
@@ -59,4 +60,21 @@ public class MovieActivity extends ActionBarActivity {
         super.onResume();
         MovieFragment movieFragment = (MovieFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_movie);
     }
+
+    @Override
+    public void onItemSelected(MovieDetail movieDetail) {
+        if (mTwoPane) {
+            Bundle detailsBundle = new Bundle();
+            detailsBundle.putParcelable(DetailFragment.DETAIL, movieDetail);
+
+            DetailFragment detailFragment = new DetailFragment();
+            detailFragment.setArguments(detailsBundle);
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container, detailFragment, DETAILFRAGMENT_TAG).commit();
+        } else {
+            Intent intent = new Intent(this, MovieDetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
+            startActivity(intent);
+        }
+    }
 }
+

@@ -1,7 +1,6 @@
 package com.extoix.android.movies.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,8 +15,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.extoix.android.movies.adapter.MoviePosterAdapter;
 import com.extoix.android.movies.R;
+import com.extoix.android.movies.adapter.MoviePosterAdapter;
 import com.extoix.android.movies.model.MovieDetail;
 import com.extoix.android.movies.retrofit.MovieDetailResult;
 import com.extoix.android.movies.retrofit.TheMovieDB;
@@ -37,6 +36,10 @@ public class MovieFragment extends Fragment {
     private ArrayList<MovieDetail> mMovieDetailList;
 
     public static final String MOVIE_DETAIL_LIST_KEY = "movieDetailList";
+
+    public interface MovieCallback {
+        public void onItemSelected(MovieDetail movieDetail);
+    }
 
     public MovieFragment() {
     }
@@ -95,9 +98,7 @@ public class MovieFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
                 MovieDetail movieDetail = mMoviePosterAdapter.getItem(position);
-
-                Intent intent = new Intent(getActivity(), MovieDetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
-                startActivity(intent);
+                ((MovieCallback) getActivity()).onItemSelected(movieDetail);
             }
         });
 

@@ -1,6 +1,6 @@
 package com.extoix.android.movies.ui;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,17 +15,28 @@ import com.squareup.picasso.Picasso;
 
 public class DetailFragment extends Fragment {
 
+    static final String DETAIL = "DETAIL";
+
     public DetailFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Intent intent = getActivity().getIntent();
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        if(intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            MovieDetail movieDetail = (MovieDetail)intent.getParcelableExtra(Intent.EXTRA_TEXT);
+        MovieDetail movieDetail = null;
 
+        Bundle detailBundle = getArguments();
+        if (detailBundle != null) {
+            movieDetail = detailBundle.getParcelable(DetailFragment.DETAIL);
+        }
+
+        Intent intent = getActivity().getIntent();
+        if(intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
+            movieDetail = (MovieDetail) intent.getParcelableExtra(Intent.EXTRA_TEXT);
+        }
+
+        if(movieDetail != null) {
             ((TextView)rootView.findViewById(R.id.movie_detail_title)).setText(movieDetail.getTitle());
 
             ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_detail_poster);

@@ -7,8 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.extoix.android.movies.R;
+import com.extoix.android.movies.model.MovieDetail;
 
 public class MovieDetailFragment extends Fragment {
+
+    static final String MOVIE_DETAIL = "DETAIL";
+    private MovieDetail mMovieDetail;
+
 
     public MovieDetailFragment() {
     }
