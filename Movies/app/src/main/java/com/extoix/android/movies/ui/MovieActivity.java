@@ -17,7 +17,7 @@ public class MovieActivity extends ActionBarActivity implements MovieFragment.Mo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_movie);
 
 
         if (findViewById(R.id.movie_detail_container) != null) {
@@ -72,7 +72,7 @@ public class MovieActivity extends ActionBarActivity implements MovieFragment.Mo
 
             getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container, detailFragment, DETAILFRAGMENT_TAG).commit();
         } else {
-            Intent intent = new Intent(this, MovieDetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
+            Intent intent = new Intent(this, DetailActivity.class).putExtra(Intent.EXTRA_TEXT, movieDetail);
             startActivity(intent);
         }
     }
