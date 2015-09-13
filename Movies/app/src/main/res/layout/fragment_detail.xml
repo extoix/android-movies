@@ -140,12 +140,11 @@
                     android:textStyle="bold"
                     android:text="@string/label_header_review" />
 
-                <ListView
+                <LinearLayout
                     android:id="@+id/list_item_review"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                </ListView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
 
             </LinearLayout>
 

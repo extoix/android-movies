@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import com.extoix.android.movies.R;
 import com.extoix.android.movies.model.MovieDetail;
+import com.extoix.android.movies.model.ReviewDetail;
+import com.extoix.android.movies.model.ReviewDetailResult;
 import com.extoix.android.movies.model.TrailerDetail;
 import com.extoix.android.movies.model.TrailerDetailResult;
 import com.extoix.android.movies.retrofit.TheMovieDB;
@@ -57,8 +59,45 @@ public class DetailFragment extends Fragment {
 
         createDetailSection(rootView, movieDetail);
         createTrailerSection(inflater, container, rootView, movieDetail);
+        createReviewSection(inflater, container, rootView, movieDetail);
 
         return rootView;
+    }
+
+    private void createReviewSection(LayoutInflater inflater, final ViewGroup container, final View rootView, MovieDetail movieDetail) {
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(getString(R.string.themoviedb_api_url)).build();
+        TheMovieDB theMovieDBService = restAdapter.create(TheMovieDB.class);
+
+        String apiKey = getString(R.string.themoviedb_api_key);
+
+        String movieId = movieDetail.getId();
+
+        theMovieDBService.retrieveMovieReviewResult(movieId, apiKey, new Callback<ReviewDetailResult>() {
+
+            @Override
+            public void success(ReviewDetailResult reviewDetailResult, Response response) {
+                List<ReviewDetail> reviewDetailList = reviewDetailResult.getResults();
+
+                for (ReviewDetail reviewDetail : reviewDetailList) {
+                    String reviewAuthor = reviewDetail.getAuthor();
+                    String reviewContent = reviewDetail.getContent();
+
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View listItemReview = inflater.inflate(R.layout.list_item_review, container, false);
+                    ((TextView)listItemReview.findViewById(R.id.review_author)).setText(reviewAuthor);
+                    ((TextView)listItemReview.findViewById(R.id.review_content)).setText(reviewContent);
+
+                    LinearLayout reviewListView = (LinearLayout) rootView.findViewById(R.id.list_item_review);
+                    reviewListView.addView(listItemReview);
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG, "Error with createReviewSection during service Callback<ReviewDetailResult>", error);
+            }
+        });
     }
 
     private void createTrailerSection(LayoutInflater inflater, final ViewGroup container, final View rootView, MovieDetail movieDetail) {

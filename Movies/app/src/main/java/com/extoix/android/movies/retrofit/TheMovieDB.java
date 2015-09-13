@@ -1,6 +1,7 @@
 package com.extoix.android.movies.retrofit;
 
 import com.extoix.android.movies.model.MovieDetailResult;
+import com.extoix.android.movies.model.ReviewDetailResult;
 import com.extoix.android.movies.model.TrailerDetailResult;
 
 import retrofit.Callback;
@@ -14,4 +15,7 @@ public interface TheMovieDB {
 
     @GET("/3/movie/{movieId}/videos")
     void retrieveMovieTrailerResult(@Path("movieId") String movieId, @Query("api_key") String apiKey, Callback<TrailerDetailResult> callback);
+
+    @GET("/3/movie/{movieId}/reviews")
+    void retrieveMovieReviewResult(@Path("movieId") String movieId, @Query("api_key") String apiKey, Callback<ReviewDetailResult> callback);
 }
