@@ -131,7 +131,6 @@ public class MovieFragment extends Fragment {
         Map<String,?> keys = favoriteSharedPreferences.getAll();
 
         if(keys.isEmpty()) {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container, new DetailFragment(), MovieActivity.DETAILFRAGMENT_TAG).commit();
             Toast.makeText(getActivity(), "There are no favorites, please select some from Popularity or Highest Rating.", Toast.LENGTH_LONG).show();
         } else {
             for(Map.Entry<String,?> entry : keys.entrySet()){
