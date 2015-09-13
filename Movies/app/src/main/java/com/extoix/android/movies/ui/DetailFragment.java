@@ -56,15 +56,18 @@ public class DetailFragment extends Fragment {
             movieDetail = (MovieDetail) intent.getParcelableExtra(Intent.EXTRA_TEXT);
         }
 
-
-        createDetailSection(rootView, movieDetail);
-        createTrailerSection(inflater, container, rootView, movieDetail);
-        createReviewSection(inflater, container, rootView, movieDetail);
+        if(movieDetail == null) {
+            rootView = inflater.inflate(R.layout.fragment_detail_start, container, false);
+        } else {
+            createDetailSection(rootView, movieDetail);
+            createTrailerSection(inflater, container, rootView, movieDetail);
+            createReviewSection(inflater, container, rootView, movieDetail);
+        }
 
         return rootView;
     }
 
-    private void createReviewSection(LayoutInflater inflater, final ViewGroup container, final View rootView, MovieDetail movieDetail) {
+    private void createReviewSection(final LayoutInflater inflater, final ViewGroup container, final View rootView, MovieDetail movieDetail) {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(getString(R.string.themoviedb_api_url)).build();
         TheMovieDB theMovieDBService = restAdapter.create(TheMovieDB.class);
 
@@ -82,7 +85,6 @@ public class DetailFragment extends Fragment {
                     String reviewAuthor = reviewDetail.getAuthor();
                     String reviewContent = reviewDetail.getContent();
 
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View listItemReview = inflater.inflate(R.layout.list_item_review, container, false);
                     ((TextView)listItemReview.findViewById(R.id.review_author)).setText(reviewAuthor);
                     ((TextView)listItemReview.findViewById(R.id.review_content)).setText(reviewContent);
@@ -100,7 +102,7 @@ public class DetailFragment extends Fragment {
         });
     }
 
-    private void createTrailerSection(LayoutInflater inflater, final ViewGroup container, final View rootView, MovieDetail movieDetail) {
+    private void createTrailerSection(final LayoutInflater inflater, final ViewGroup container, final View rootView, MovieDetail movieDetail) {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(getString(R.string.themoviedb_api_url)).build();
         TheMovieDB theMovieDBService = restAdapter.create(TheMovieDB.class);
 
@@ -118,7 +120,6 @@ public class DetailFragment extends Fragment {
                     final String trailerKey = trailerDetail.getKey();
                     String trailerName = trailerDetail.getName();
 
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View listItemTrailer = inflater.inflate(R.layout.list_item_trailer, container, false);
                     ((TextView)listItemTrailer.findViewById(R.id.trailer_name)).setText(trailerName);
 
@@ -152,9 +153,10 @@ public class DetailFragment extends Fragment {
     }
 
     private void createDetailSection(View rootView, MovieDetail movieDetail) {
-        final String movieDetailId = movieDetail.getId();
 
         if(movieDetail != null) {
+            String movieDetailId = movieDetail.getId();
+
             ((TextView)rootView.findViewById(R.id.movie_detail_title)).setText(movieDetail.getTitle());
 
             ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_detail_poster);
