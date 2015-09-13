@@ -118,16 +118,27 @@ public class MovieFragment extends Fragment {
         String apiKey = getString(R.string.themoviedb_api_key);
 
         if(sortBy.equals(getString(R.string.pref_sort_favorite))) {
-            mMoviePosterAdapter.clear();
+            retrieveMovieDetail(theMovieDBService, apiKey);
+        } else {
+            retrieveMovieDetailResult(sortBy, theMovieDBService, apiKey);
+        }
+    }
 
-            SharedPreferences favoriteSharedPreferences = getActivity().getSharedPreferences(getString(R.string.favorite_pref_key), Context.MODE_PRIVATE);
-            Map<String,?> keys = favoriteSharedPreferences.getAll();
+    private void retrieveMovieDetail(TheMovieDB theMovieDBService, String apiKey) {
+        mMoviePosterAdapter.clear();
 
+        SharedPreferences favoriteSharedPreferences = getActivity().getSharedPreferences(getString(R.string.favorite_pref_key), Context.MODE_PRIVATE);
+        Map<String,?> keys = favoriteSharedPreferences.getAll();
+
+        if(keys.isEmpty()) {
+            Toast.makeText(getActivity(), "There are no favorites, please select some from Popularity or Highest Rating.", Toast.LENGTH_LONG).show();
+        } else {
             for(Map.Entry<String,?> entry : keys.entrySet()){
                 String movieId = entry.getValue().toString();
                 theMovieDBService.retrieveMovieDetail(movieId, apiKey, new Callback<MovieDetail>() {
                     @Override
                     public void success(MovieDetail movieDetail, Response response) {
+                        updatePosterPathURL(movieDetail);
                         mMoviePosterAdapter.add(movieDetail);
                     }
 
@@ -137,31 +148,37 @@ public class MovieFragment extends Fragment {
                     }
                 });
             }
-        } else {
-            theMovieDBService.retrieveMovieDetailResult(sortBy, apiKey, new Callback<MovieDetailResult>() {
-                @Override
-                public void success(MovieDetailResult movieDetailResult, Response response) {
-                    List<MovieDetail> movieDetailList = movieDetailResult.getResults();
-
-                    updatePosterPathURL(movieDetailList);
-
-                    mMoviePosterAdapter.clear();
-                    mMoviePosterAdapter.addAll(movieDetailResult.getResults());
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    Log.e(LOG, "Error with updateMoviePosters during service Callback<MovieDetailResult>", error);
-                }
-            });
         }
+    }
+
+    private void retrieveMovieDetailResult(String sortBy, TheMovieDB theMovieDBService, String apiKey) {
+        theMovieDBService.retrieveMovieDetailResult(sortBy, apiKey, new Callback<MovieDetailResult>() {
+            @Override
+            public void success(MovieDetailResult movieDetailResult, Response response) {
+                List<MovieDetail> movieDetailList = movieDetailResult.getResults();
+
+                updatePosterPathURL(movieDetailList);
+
+                mMoviePosterAdapter.clear();
+                mMoviePosterAdapter.addAll(movieDetailResult.getResults());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG, "Error with updateMoviePosters during service Callback<MovieDetailResult>", error);
+            }
+        });
+    }
+
+    private void updatePosterPathURL(MovieDetail movieDetail) {
+        String posterPath = movieDetail.getPoster_path();
+        String posterPathURL = buildPosterPathURL(posterPath);
+        movieDetail.setPosterPathURL(posterPathURL);
     }
 
     private void updatePosterPathURL(List<MovieDetail> movieDetailList) {
         for (MovieDetail movieDetail : movieDetailList) {
-            String posterPath = movieDetail.getPoster_path();
-            String posterPathURL = buildPosterPathURL(posterPath);
-            movieDetail.setPosterPathURL(posterPathURL);
+            updatePosterPathURL(movieDetail);
         }
     }
 
