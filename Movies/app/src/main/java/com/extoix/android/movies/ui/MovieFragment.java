@@ -23,6 +23,7 @@ import com.extoix.android.movies.retrofit.TheMovieDB;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -106,8 +107,8 @@ public class MovieFragment extends Fragment {
     }
 
     private void updateMoviePosters() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortBy = sharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
+        SharedPreferences sortPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortBy = sortPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity));
 
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(getString(R.string.themoviedb_api_url)).build();
         TheMovieDB theMovieDBService = restAdapter.create(TheMovieDB.class);
@@ -116,23 +117,44 @@ public class MovieFragment extends Fragment {
         // I also added the file which I named themoviedbAPIKey.xml to my .gitignore
         String apiKey = getString(R.string.themoviedb_api_key);
 
-        theMovieDBService.retrieveMovieDetailResult(sortBy, apiKey, new Callback<MovieDetailResult>() {
-            @Override
-            public void success(MovieDetailResult movieDetailResult, Response response) {
+        if(sortBy.equals(getString(R.string.pref_sort_favorite))) {
+            mMoviePosterAdapter.clear();
 
-                List<MovieDetail> movieDetailList = movieDetailResult.getResults();
+            SharedPreferences favoriteSharedPreferences = getActivity().getSharedPreferences(getString(R.string.favorite_pref_key), Context.MODE_PRIVATE);
+            Map<String,?> keys = favoriteSharedPreferences.getAll();
 
-                updatePosterPathURL(movieDetailList);
+            for(Map.Entry<String,?> entry : keys.entrySet()){
+                String movieId = entry.getValue().toString();
+                theMovieDBService.retrieveMovieDetail(movieId, apiKey, new Callback<MovieDetail>() {
+                    @Override
+                    public void success(MovieDetail movieDetail, Response response) {
+                        mMoviePosterAdapter.add(movieDetail);
+                    }
 
-                mMoviePosterAdapter.clear();
-                mMoviePosterAdapter.addAll(movieDetailResult.getResults());
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(LOG, "Error with updateMoviePosters during service Callback<MovieDetail>", error);
+                    }
+                });
             }
+        } else {
+            theMovieDBService.retrieveMovieDetailResult(sortBy, apiKey, new Callback<MovieDetailResult>() {
+                @Override
+                public void success(MovieDetailResult movieDetailResult, Response response) {
+                    List<MovieDetail> movieDetailList = movieDetailResult.getResults();
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(LOG, "Error with updateMoviePosters during service Callback<MovieDetailResult>", error);
-            }
-        });
+                    updatePosterPathURL(movieDetailList);
+
+                    mMoviePosterAdapter.clear();
+                    mMoviePosterAdapter.addAll(movieDetailResult.getResults());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.e(LOG, "Error with updateMoviePosters during service Callback<MovieDetailResult>", error);
+                }
+            });
+        }
     }
 
     private void updatePosterPathURL(List<MovieDetail> movieDetailList) {
