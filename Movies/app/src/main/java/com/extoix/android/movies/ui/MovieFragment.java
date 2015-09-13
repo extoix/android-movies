@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.extoix.android.movies.R;
 import com.extoix.android.movies.adapter.MoviePosterAdapter;
 import com.extoix.android.movies.model.MovieDetail;
-import com.extoix.android.movies.retrofit.MovieDetailResult;
+import com.extoix.android.movies.model.MovieDetailResult;
 import com.extoix.android.movies.retrofit.TheMovieDB;
 
 import java.util.ArrayList;
@@ -130,7 +130,7 @@ public class MovieFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e(LOG, "Error with updateMoviePosters during service CallBack", error);
+                Log.e(LOG, "Error with updateMoviePosters during service Callback<MovieDetailResult>", error);
             }
         });
     }

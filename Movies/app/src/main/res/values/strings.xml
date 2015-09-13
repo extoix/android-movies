@@ -22,4 +22,6 @@
     <string name="pref_sort_favorite" translatable="false">favorite.desc</string>
 
     <string name="favorite_pref_key">com.extoix.android.movies.MOVIE_FAVORITE_PREFERENCE_FILE_KEY</string>
+
+    <string name="youtube_base_url">https://www.youtube.com/watch?v=</string>
 </resources>

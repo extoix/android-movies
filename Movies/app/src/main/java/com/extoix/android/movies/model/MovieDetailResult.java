@@ -1,6 +1,4 @@
-package com.extoix.android.movies.retrofit;
-
-import com.extoix.android.movies.model.MovieDetail;
+package com.extoix.android.movies.model;
 
 import java.util.ArrayList;
 
