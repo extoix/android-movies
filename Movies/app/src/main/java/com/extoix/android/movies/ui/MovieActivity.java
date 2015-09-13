@@ -11,7 +11,7 @@ import com.extoix.android.movies.model.MovieDetail;
 
 public class MovieActivity extends ActionBarActivity implements MovieFragment.MovieCallback {
 
-    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    static final String DETAILFRAGMENT_TAG = "DFTAG";
     private boolean mTwoPane;
 
     @Override
