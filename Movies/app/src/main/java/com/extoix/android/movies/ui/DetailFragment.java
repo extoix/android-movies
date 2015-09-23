@@ -22,7 +22,7 @@ import com.extoix.android.movies.model.ReviewDetail;
 import com.extoix.android.movies.model.ReviewDetailResult;
 import com.extoix.android.movies.model.TrailerDetail;
 import com.extoix.android.movies.model.TrailerDetailResult;
-import com.extoix.android.movies.retrofit.TheMovieDB;
+import com.extoix.android.movies.service.TheMovieDB;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

@@ -19,7 +19,7 @@ import com.extoix.android.movies.R;
 import com.extoix.android.movies.adapter.MoviePosterAdapter;
 import com.extoix.android.movies.model.MovieDetail;
 import com.extoix.android.movies.model.MovieDetailResult;
-import com.extoix.android.movies.retrofit.TheMovieDB;
+import com.extoix.android.movies.service.TheMovieDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +113,7 @@ public class MovieFragment extends Fragment {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(getString(R.string.themoviedb_api_url)).build();
         TheMovieDB theMovieDBService = restAdapter.create(TheMovieDB.class);
 
-        // I put my themoviedb apikey in a string resource file and did not check it in
+        // I put my themoviedb_api_key in a string resource file and did not check it in
         // I also added the file which I named themoviedbAPIKey.xml to my .gitignore
         String apiKey = getString(R.string.themoviedb_api_key);
 

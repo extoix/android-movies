@@ -1,4 +1,4 @@
-package com.extoix.android.movies.retrofit;
+package com.extoix.android.movies.service;
 
 import com.extoix.android.movies.model.MovieDetail;
 import com.extoix.android.movies.model.MovieDetailResult;
