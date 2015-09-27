@@ -2,14 +2,21 @@ package com.extoix.android.movies.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.test.AndroidTestCase;
+
+import com.extoix.android.movies.provider.MovieDetailContract;
+import com.extoix.android.movies.provider.MovieDetailDbHelper;
 
 import java.util.Map;
 import java.util.Set;
 
-public class MovieDetailTestUtilities extends AndroidTestCase {
+public class MovieDetailTestHelper extends AndroidTestCase {
     static ContentValues createMovieDetailValues() {
         ContentValues testValues = new ContentValues();
 

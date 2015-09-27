@@ -1,14 +1,11 @@
 package com.extoix.android.movies.provider;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import com.extoix.android.movies.provider.MovieDetailContract.MovieDetailEntry;
 
@@ -80,7 +77,7 @@ public class MovieDetailTest extends AndroidTestCase {
         MovieDetailDbHelper movieDetailDbHelper = new MovieDetailDbHelper(mContext);
         SQLiteDatabase db = movieDetailDbHelper.getWritableDatabase();
 
-        ContentValues testValues = MovieDetailTestUtilities.createMovieDetailValues();
+        ContentValues testValues = MovieDetailTestHelper.createMovieDetailValues();
 
         long movieDetailRowId = db.insert(MovieDetailEntry.TABLE_MOVIE_DETAIL, null, testValues);
         assertTrue(movieDetailRowId != -1);
@@ -90,7 +87,7 @@ public class MovieDetailTest extends AndroidTestCase {
         assertTrue("Error: No Records returned from location query", cursor.moveToFirst());
 
 
-        MovieDetailTestUtilities.validateCurrentRecord("Error: Movie Detail Query Validation Failed", cursor, testValues);
+        MovieDetailTestHelper.validateCurrentRecord("Error: Movie Detail Query Validation Failed", cursor, testValues);
         assertFalse("Error: More than one record returned from location query", cursor.moveToNext());
 
         cursor.close();

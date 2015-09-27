@@ -1,6 +1,7 @@
 package com.extoix.android.movies.provider;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -28,6 +29,10 @@ public class MovieDetailContract {
 
         public static Uri buildMovieDetailUri(String movieId) {
             return CONTENT_URI.buildUpon().appendPath(movieId).build();
+        }
+
+        public static Uri buildMovieDetailUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 

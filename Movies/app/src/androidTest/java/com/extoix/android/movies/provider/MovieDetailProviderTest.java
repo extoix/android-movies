@@ -1,11 +1,14 @@
 package com.extoix.android.movies.provider;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.test.AndroidTestCase;
 
 import com.extoix.android.movies.provider.MovieDetailContract.MovieDetailEntry;
+import com.extoix.android.movies.utility.ContentObserver;
 
 public class MovieDetailProviderTest extends AndroidTestCase {
 
@@ -30,12 +33,12 @@ public class MovieDetailProviderTest extends AndroidTestCase {
     }
 
     public void testMovieDetailQuery() {
-        MovieDetailTestUtilities.insertMovieDetailvalues(mContext);
+        MovieDetailTestHelper.insertMovieDetailvalues(mContext);
 
         Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, null, null, null);
-        ContentValues testValues = MovieDetailTestUtilities.createMovieDetailValues();
+        ContentValues testValues = MovieDetailTestHelper.createMovieDetailValues();
 
-        MovieDetailTestUtilities.validateCursor("testMovieDetailQuery", movieDetailCursor, testValues);
+        MovieDetailTestHelper.validateCursor("testMovieDetailQuery", movieDetailCursor, testValues);
 
         if(Build.VERSION.SDK_INT >= 19) {
             assertEquals("Error: Movie Detail Query did not properly set NotificationUri", movieDetailCursor.getNotificationUri(), MovieDetailEntry.CONTENT_URI);
@@ -43,15 +46,39 @@ public class MovieDetailProviderTest extends AndroidTestCase {
     }
 
     public void testMovieDetailQueryWithMovieId() {
-        MovieDetailTestUtilities.insertMovieDetailvalues(mContext);
+        MovieDetailTestHelper.insertMovieDetailvalues(mContext);
 
         Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.buildMovieDetailUri(TEST_MOVIE_ID), null, null, null, null);
-        ContentValues testValues = MovieDetailTestUtilities.createMovieDetailValues();
+        ContentValues testValues = MovieDetailTestHelper.createMovieDetailValues();
 
-        MovieDetailTestUtilities.validateCursor("testMovieDetailQueryWithMovieId", movieDetailCursor, testValues);
+        MovieDetailTestHelper.validateCursor("testMovieDetailQueryWithMovieId", movieDetailCursor, testValues);
 
         if(Build.VERSION.SDK_INT >= 19) {
             assertEquals("Error: Movie Detail Query did not properly set NotificationUri", movieDetailCursor.getNotificationUri(), MovieDetailEntry.buildMovieDetailUri(TEST_MOVIE_ID));
         }
+    }
+
+    public void testMovieDetailInsertUsingProvider() {
+        //Insert a movie detail record
+        ContentValues movieDetailValues = MovieDetailTestHelper.createMovieDetailValues();
+
+        ContentObserver contentObserver = ContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieDetailEntry.CONTENT_URI, true, contentObserver);
+        Uri movieDetailUri = mContext.getContentResolver().insert(MovieDetailEntry.CONTENT_URI, movieDetailValues);
+
+        //Check to see if observer received notification from provider
+        contentObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(contentObserver);
+
+        long movieDetailRowId = ContentUris.parseId(movieDetailUri);
+        assertTrue(movieDetailRowId != -1);
+
+        //Query for movie detail record
+        Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, null, null, null);
+        MovieDetailTestHelper.validateCursor("testMovieDetailInsertUsingProvider. Error validating MovieDetailEntry.", movieDetailCursor, movieDetailValues);
+
+        //Check to see if observer received notification from provider
+        contentObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(contentObserver);
     }
 }
