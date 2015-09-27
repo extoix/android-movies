@@ -58,6 +58,9 @@ public class MovieDetailProviderTest extends AndroidTestCase {
         }
     }
 
+    /**
+     * Test performs insert of a test record, but also a query to seek out the inserted record
+     */
     public void testMovieDetailInsertUsingProvider() {
         //Insert a movie detail record
         ContentValues movieDetailValues = MovieDetailTestHelper.createMovieDetailValues();
@@ -81,4 +84,22 @@ public class MovieDetailProviderTest extends AndroidTestCase {
         contentObserver.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(contentObserver);
     }
+
+    public void testMovieDetailDeleteUsingProvider() {
+        testMovieDetailInsertUsingProvider();
+
+        ContentObserver contentObserver = ContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieDetailEntry.CONTENT_URI, true, contentObserver);
+
+        mContext.getContentResolver().delete(MovieDetailEntry.CONTENT_URI, null, null);
+
+        Cursor cursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, null, null, null);
+        assertEquals("Error: Records not deleted from Movie Detail table during delete", 0, cursor.getCount());
+        cursor.close();
+
+        contentObserver.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(contentObserver);
+    }
+
 }

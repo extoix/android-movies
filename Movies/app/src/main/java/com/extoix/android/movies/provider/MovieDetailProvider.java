@@ -116,12 +116,33 @@ public class MovieDetailProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        final SQLiteDatabase sqlDb = mMovieDetailDbHelper.getWritableDatabase();
+
+        // if all rows are deleted, the number of rows deleted are returned
+        if(null == selection) {
+            selection = "1";
+        }
+
+        int rowsDeleted;
+        switch(sUriMatcher.match(uri)) {
+            case MOVIE_DETAIL:
+                rowsDeleted = sqlDb.delete(MovieDetailEntry.TABLE_MOVIE_DETAIL, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Because a null deletes all rows
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsDeleted;
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
 
