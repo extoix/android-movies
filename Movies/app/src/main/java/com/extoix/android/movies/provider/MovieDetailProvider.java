@@ -40,7 +40,7 @@ public class MovieDetailProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
 
-        switch (sUriMatcher.match(uri)) {
+        switch(sUriMatcher.match(uri)) {
             case MOVIE_DETAIL_WITH_MOVIE_ID: {
                 return MovieDetailEntry.CONTENT_ITEM_TYPE;
             }
@@ -58,7 +58,7 @@ public class MovieDetailProvider extends ContentProvider {
 
         Cursor cursor;
 
-        switch (sUriMatcher.match(uri)) {
+        switch(sUriMatcher.match(uri)) {
             // "movie_detail/*"
             case MOVIE_DETAIL_WITH_MOVIE_ID: {
                 cursor = mMovieDetailDbHelper.getReadableDatabase().query(
@@ -97,7 +97,7 @@ public class MovieDetailProvider extends ContentProvider {
 
         Uri returnUri;
 
-        switch (sUriMatcher.match(uri)) {
+        switch(sUriMatcher.match(uri)) {
             case MOVIE_DETAIL: {
                 long movieDetailRowId = sqlDb.insert(MovieDetailEntry.TABLE_MOVIE_DETAIL, null, values);
                 if ( movieDetailRowId > 0 )
@@ -143,7 +143,22 @@ public class MovieDetailProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase sqlDb = mMovieDetailDbHelper.getWritableDatabase();
+
+        int rowsUpdated;
+        switch(sUriMatcher.match(uri)) {
+            case MOVIE_DETAIL:
+                rowsUpdated = sqlDb.update(MovieDetailEntry.TABLE_MOVIE_DETAIL, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
     }
 
     @Override

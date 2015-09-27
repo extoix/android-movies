@@ -32,26 +32,26 @@ public class MovieDetailProviderTest extends AndroidTestCase {
         assertEquals("Error: the MovieDetailEntry CONTENT_URI should return MovieDetailEntry.CONTENT_ITEM_TYPE", MovieDetailEntry.CONTENT_ITEM_TYPE, typeItem);
     }
 
-    public void testMovieDetailQuery() {
+    public void testQuery() {
         MovieDetailTestHelper.insertMovieDetailvalues(mContext);
 
         Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, null, null, null);
         ContentValues testValues = MovieDetailTestHelper.createMovieDetailValues();
 
-        MovieDetailTestHelper.validateCursor("testMovieDetailQuery", movieDetailCursor, testValues);
+        MovieDetailTestHelper.validateCursor("testQuery", movieDetailCursor, testValues);
 
         if(Build.VERSION.SDK_INT >= 19) {
             assertEquals("Error: Movie Detail Query did not properly set NotificationUri", movieDetailCursor.getNotificationUri(), MovieDetailEntry.CONTENT_URI);
         }
     }
 
-    public void testMovieDetailQueryWithMovieId() {
+    public void testQueryWithMovieId() {
         MovieDetailTestHelper.insertMovieDetailvalues(mContext);
 
         Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.buildMovieDetailUri(TEST_MOVIE_ID), null, null, null, null);
         ContentValues testValues = MovieDetailTestHelper.createMovieDetailValues();
 
-        MovieDetailTestHelper.validateCursor("testMovieDetailQueryWithMovieId", movieDetailCursor, testValues);
+        MovieDetailTestHelper.validateCursor("testQueryWithMovieId", movieDetailCursor, testValues);
 
         if(Build.VERSION.SDK_INT >= 19) {
             assertEquals("Error: Movie Detail Query did not properly set NotificationUri", movieDetailCursor.getNotificationUri(), MovieDetailEntry.buildMovieDetailUri(TEST_MOVIE_ID));
@@ -61,7 +61,7 @@ public class MovieDetailProviderTest extends AndroidTestCase {
     /**
      * Test performs insert of a test record, but also a query to seek out the inserted record
      */
-    public void testMovieDetailInsertUsingProvider() {
+    public void testInsert() {
         //Insert a movie detail record
         ContentValues movieDetailValues = MovieDetailTestHelper.createMovieDetailValues();
 
@@ -78,15 +78,15 @@ public class MovieDetailProviderTest extends AndroidTestCase {
 
         //Query for movie detail record
         Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, null, null, null);
-        MovieDetailTestHelper.validateCursor("testMovieDetailInsertUsingProvider. Error validating MovieDetailEntry.", movieDetailCursor, movieDetailValues);
+        MovieDetailTestHelper.validateCursor("testInsert. Error validating MovieDetailEntry.", movieDetailCursor, movieDetailValues);
 
         //Check to see if observer received notification from provider
         contentObserver.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(contentObserver);
     }
 
-    public void testMovieDetailDeleteUsingProvider() {
-        testMovieDetailInsertUsingProvider();
+    public void testDelete() {
+        testInsert();
 
         ContentObserver contentObserver = ContentObserver.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(MovieDetailEntry.CONTENT_URI, true, contentObserver);
@@ -100,6 +100,39 @@ public class MovieDetailProviderTest extends AndroidTestCase {
         contentObserver.waitForNotificationOrFail();
 
         mContext.getContentResolver().unregisterContentObserver(contentObserver);
+    }
+
+    public void testUpdate() {
+        // create movie detail data to add to the database
+        ContentValues movieDetailValues = MovieDetailTestHelper.createMovieDetailValues();
+
+        Uri movieDetailUri = mContext.getContentResolver().insert(MovieDetailEntry.CONTENT_URI, movieDetailValues);
+        long movieDetailRowId = ContentUris.parseId(movieDetailUri);
+        assertTrue(movieDetailRowId != -1);
+
+        // update a piece of data in the ContentValues data container
+        ContentValues updatedMovieDetailValues = new ContentValues(movieDetailValues);
+        updatedMovieDetailValues.put(MovieDetailEntry._ID, movieDetailRowId);
+        updatedMovieDetailValues.put(MovieDetailEntry.COLUMN_OVERVIEW, "Testing new overview text");
+
+        // get the cursor of the record in the database
+        Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, null, null, null);
+
+        // perform the update of the record in the database
+        ContentObserver contentObserver = ContentObserver.getTestContentObserver();
+        movieDetailCursor.registerContentObserver(contentObserver);
+
+        int count = mContext.getContentResolver().update(MovieDetailEntry.CONTENT_URI, updatedMovieDetailValues, MovieDetailEntry._ID + "= ?", new String[]{Long.toString(movieDetailRowId)});
+        assertEquals(count, 1);
+
+        contentObserver.waitForNotificationOrFail();
+        movieDetailCursor.unregisterContentObserver(contentObserver);
+
+        // query for the piece of data and make sure it changed to the updated content values
+        movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, MovieDetailEntry._ID + " = " + movieDetailRowId, null, null);
+        MovieDetailTestHelper.validateCursor("testUpdate.  Error validating movie entry update.", movieDetailCursor, updatedMovieDetailValues);
+
+        movieDetailCursor.close();
     }
 
 }
