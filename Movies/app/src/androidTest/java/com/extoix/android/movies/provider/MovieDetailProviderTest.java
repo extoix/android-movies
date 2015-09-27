@@ -135,4 +135,34 @@ public class MovieDetailProviderTest extends AndroidTestCase {
         movieDetailCursor.close();
     }
 
+    public void testBulkInsert() {
+        // perform bulk insert of data
+        ContentValues[] bulkInsertMovieDetailValues = MovieDetailTestHelper.createBulkInsertMovieDetailValues();
+
+        ContentObserver contentObserver = ContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieDetailEntry.CONTENT_URI, true, contentObserver);
+
+        int insertCount = mContext.getContentResolver().bulkInsert(MovieDetailEntry.CONTENT_URI, bulkInsertMovieDetailValues);
+
+        contentObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(contentObserver);
+        assertEquals(insertCount, 10);
+
+
+        // use the cursor and query the database to see if we can fetch all 10 records bulk inserted
+        Cursor movieDetailCursor = mContext.getContentResolver().query(MovieDetailEntry.CONTENT_URI, null, null, null, null);
+        assertEquals(movieDetailCursor.getCount(), 10);
+
+
+        // check to see if the records match the 10 that was added
+        movieDetailCursor.moveToFirst();
+        for ( int i = 0; i < 10 ; i++, movieDetailCursor.moveToNext() ) {
+            MovieDetailTestHelper.validateCurrentRecord("testBulkInsert.  Error validating WeatherEntry " + i, movieDetailCursor, bulkInsertMovieDetailValues[i]);
+        }
+
+
+        movieDetailCursor.close();
+    }
+
+
 }

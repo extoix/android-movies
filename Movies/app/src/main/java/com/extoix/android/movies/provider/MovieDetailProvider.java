@@ -126,11 +126,13 @@ public class MovieDetailProvider extends ContentProvider {
 
         int rowsDeleted;
         switch(sUriMatcher.match(uri)) {
-            case MOVIE_DETAIL:
+            case MOVIE_DETAIL: {
                 rowsDeleted = sqlDb.delete(MovieDetailEntry.TABLE_MOVIE_DETAIL, selection, selectionArgs);
                 break;
-            default:
+            }
+            default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
         }
 
         // Because a null deletes all rows
@@ -147,11 +149,13 @@ public class MovieDetailProvider extends ContentProvider {
 
         int rowsUpdated;
         switch(sUriMatcher.match(uri)) {
-            case MOVIE_DETAIL:
+            case MOVIE_DETAIL: {
                 rowsUpdated = sqlDb.update(MovieDetailEntry.TABLE_MOVIE_DETAIL, values, selection, selectionArgs);
                 break;
-            default:
+            }
+            default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
         }
 
         if (rowsUpdated != 0) {
@@ -159,6 +163,34 @@ public class MovieDetailProvider extends ContentProvider {
         }
 
         return rowsUpdated;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase sqlDb = mMovieDetailDbHelper.getWritableDatabase();
+
+        switch(sUriMatcher.match(uri)) {
+            case MOVIE_DETAIL: {
+                sqlDb.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for(ContentValues movieDetail : values) {
+                        long _id = sqlDb.insert(MovieDetailEntry.TABLE_MOVIE_DETAIL, null, movieDetail);
+                        if(_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    sqlDb.setTransactionSuccessful();
+                } finally {
+                    sqlDb.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            }
+            default: {
+                return super.bulkInsert(uri, values);
+            }
+        }
     }
 
     @Override
